@@ -5,6 +5,36 @@
 
 Below are the instructions to use the helper.
 
+The helper script I have written makes use of the wonderful underscore.js replacement Lo-Dash.
+
+There are two complete working examples using Bootstrap CSS provided.  One uses the DOM and the other uses AJAX.
+
+##Include CSS files
+
+These instructions assume using Bootstrap with Datatables.  You may use whatever you choose.  For more info, see [http://www.datatables.net/blog/Twitter_Bootstrap][3] and [http://www.datatables.net/blog/Twitter_Bootstrap_2][4].
+
+Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
+
+```html
+<link rel="stylesheet" href="bootstrap.css"/>
+<link rel="stylesheet" href="bootstrap-responsive.min.css"/>
+<link rel="stylesheet" href="DT_bootstrap.css"/>
+<link rel="stylesheet" href="datatables.responsive.css"/>
+```
+
+##Include JS files
+
+Add Lo-Dash, jQuery, Datatables and Datables-Bootstrap and the responsive Datatables helper scripts.
+
+```jsavascript
+<script type="text/javascript" src="lodash.min.js"></script>
+<script type="text/javascript" src="query.min.js"></script>
+<script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="datatables.responsive.js"></script>
+```
+
+
 ##Create variables and break point definitions.
 
 ```javascript
@@ -95,9 +125,11 @@ That's it!
 ##Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
 
-I would also like to thank thanks Brad Vincent and his friend Steve for making the awesome responsive FooTable ([https://github.com/bradvin/FooTable][3]).  In my opinion, their implementation for a responsive table is the best to date.  Much of what I have done here is borrowed from FooTable.  Thanks again!
+I would also like to thank thanks Brad Vincent and his friend Steve for making the awesome responsive FooTable ([https://github.com/bradvin/FooTable][5]).  In my opinion, their implementation for a responsive table is the best to date.  Much of what I have done here is borrowed from FooTable.  Thanks again!
 
 
   [1]: http://datatables.net/
   [2]: http://themergency.com/footable/
-  [3]: https://github.com/bradvin/FooTable
+  [3]: http://www.datatables.net/blog/Twitter_Bootstrap
+  [4]: http://www.datatables.net/blog/Twitter_Bootstrap_2
+  [5]: https://github.com/bradvin/FooTable
