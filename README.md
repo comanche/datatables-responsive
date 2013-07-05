@@ -26,7 +26,7 @@ Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
 
 Add Lo-Dash, jQuery, Datatables and Datables-Bootstrap and the responsive Datatables helper scripts.
 
-```jsavascript
+```html
 <script type="text/javascript" src="lodash.min.js"></script>
 <script type="text/javascript" src="query.min.js"></script>
 <script type="text/javascript" src="js/jquery.dataTables.min.js"></script>
