@@ -1,5 +1,5 @@
 /**
- * File:        jquery.responsive.js
+ * File:        datatables.responsive.js
  * Version:     0.1.0
  * Author:      Seen Sai Yang
  * Info:        https://github.com/Comanche/datatables-responsive
