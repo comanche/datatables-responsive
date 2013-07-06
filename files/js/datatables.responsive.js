@@ -24,7 +24,7 @@
  * @param {Object} breakpoints          Object defining the responsive
  *                                      breakpoint for datatables.
  */
-function responsiveDatatablesHelper(tableSelector, breakpoints) {
+function ResponsiveDatatablesHelper(tableSelector, breakpoints) {
     if (typeof tableSelector === 'string') {
         this.tableContainer = $(tableSelector);
     } else {
@@ -70,7 +70,7 @@ function responsiveDatatablesHelper(tableSelector, breakpoints) {
     this.rowLiTemplate = '<li><span class="columnTitle"><!--column title--></span>: <!--column value--></li>';
 
     this.init(breakpoints);
-};
+}
 
 /**
  * Responsive datatables helper init function.  Builds breakpoint limits
@@ -80,7 +80,7 @@ function responsiveDatatablesHelper(tableSelector, breakpoints) {
  *
  * @param {Object} breakpoints
  */
-responsiveDatatablesHelper.prototype.init = function (breakpoints) {
+ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     /** Generate breakpoints in the format we need. ***************************/
     // First, we need to create a sorted array of the breakpoints given.
     var breakpointsSorted = [];
@@ -95,7 +95,7 @@ responsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Set lower and upper limits for each breakpoint.
     var lowerLimit = undefined;
-    _.each(breakpointsSorted, function (value, key) {
+    _.each(breakpointsSorted, function (value) {
         value.lowerLimit = lowerLimit;
         lowerLimit = value.upperLimit;
     });
@@ -110,7 +110,7 @@ responsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Copy the sorted breakpoint array into the breakpoints object using the
     // name as the key.
-    breakpointsSorted.forEach(function (element, index) {
+    breakpointsSorted.forEach(function (element) {
         this.breakpoints[element.name] = element;
     }, this);
 
@@ -153,18 +153,18 @@ responsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Respond to click event on expander icon
     this.tableContainer.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
-}
+};
 
 /**
  * Respond window size change.  This helps make datatables responsive.
  */
-responsiveDatatablesHelper.prototype.respond = function () {
+ResponsiveDatatablesHelper.prototype.respond = function () {
     // Get new windows width
     var newWindowWidth = $(window).width();
     var columnsHiddenCount = 0;
 
     // Loop through breakpoints to see which columns need to be shown/hidden.
-    _.each(this.breakpoints, function (element, index, array) {
+    _.each(this.breakpoints, function (element) {
         if ((!element.lowerLimit || newWindowWidth > element.lowerLimit) && (!element.upperLimit || newWindowWidth <= element.upperLimit)) {
             this.columnsHiddenIndexes = element.columnsToHide;
             this.columnsShownIndexes = _.difference(this.columnIndexes, this.columnsHiddenIndexes);
@@ -182,29 +182,29 @@ responsiveDatatablesHelper.prototype.respond = function () {
         $('tr.detail-show', this.tableContainer).each(function (index, element) {
             var tr = $(element);
             if (tr.next('.row-detail').length === 0) {
-                responsiveDatatablesHelper.prototype.showRowDetail(that, tr);
+                ResponsiveDatatablesHelper.prototype.showRowDetail(that, tr);
             }
         });
     } else {
         this.tableContainer.removeClass('hasColumnsHidden');
     }
-}
+};
 
 /**
  * Show/hide datatables columns.
  */
-responsiveDatatablesHelper.prototype.showHideColumns = function () {
+ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
     // Calculate the columns to show
     // Show columns that may have been previously hidden.
-    this.columnsShownIndexes.forEach(function (element, index, array) {
+    this.columnsShownIndexes.forEach(function (element) {
         this.tableContainer.fnSetColumnVis(element, true);
     }, this);
 
     // Hide columns that need to been previously shown.
-    this.columnsHiddenIndexes.forEach(function (element, index, array) {
+    this.columnsHiddenIndexes.forEach(function (element) {
         this.tableContainer.fnSetColumnVis(element, false);
     }, this);
-}
+};
 
 /**
  * Create the expand icon on the column with the data-class="expand" attribute
@@ -212,7 +212,7 @@ responsiveDatatablesHelper.prototype.showHideColumns = function () {
  *
  * @param {Object} tr table row object
  */
-responsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
+ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
     // Get the td for tr with the same index as the th in the header tr
     // that has the data-class="expand" attribute defined.
     var tds = $('td', tr);
@@ -223,7 +223,7 @@ responsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
             td.prepend(this.expandIconTemplate);
         }
     }
-}
+};
 
 /**
  * Show row detail event handler.
@@ -233,25 +233,27 @@ responsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
  *
  * @param {Object} event jQuery event object
  */
-responsiveDatatablesHelper.prototype.showRowDetailEventHandler = function (event) {
+ResponsiveDatatablesHelper.prototype.showRowDetailEventHandler = function (event) {
     // Get the parent tr of which this td belongs to.
     var tr = $(this).closest('tr');
 
     // Show/hide row details
     if (tr.hasClass('detail-show')) {
-        responsiveDatatablesHelper.prototype.hideRowDetail(event.data.responsiveDatatablesHelperInstance, tr);
+        ResponsiveDatatablesHelper.prototype.hideRowDetail(event.data.responsiveDatatablesHelperInstance, tr);
     } else {
-        responsiveDatatablesHelper.prototype.showRowDetail(event.data.responsiveDatatablesHelperInstance, tr);
+        ResponsiveDatatablesHelper.prototype.showRowDetail(event.data.responsiveDatatablesHelperInstance, tr);
     }
 
     tr.toggleClass('detail-show');
-}
+};
 
 /**
  * Show row details
- * @param {Object} tr jQuery wrapped set
+ *
+ * @param {ResponsiveDatatablesHelper} responsiveDatatablesHelperInstance instance of ResponsiveDatatablesHelper
+ * @param {Object}                     tr                                 jQuery wrapped set
  */
-responsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatablesHelperInstance, tr) {
+ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatablesHelperInstance, tr) {
     // Get column because we need their titles.
     var tableContainer = responsiveDatatablesHelperInstance.tableContainer;
     var columns = tableContainer.fnSettings().aoColumns;
@@ -276,12 +278,14 @@ responsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
 
     // Append the new tr after the current tr.
     tr.after(newTr);
-}
+};
 
 /**
  * Hide row details
- * @param {Object} tr jQuery wrapped set
+ *
+ * @param {ResponsiveDatatablesHelper} responsiveDatatablesHelperInstance instance of ResponsiveDatatablesHelper
+ * @param {Object}                     tr                                 jQuery wrapped set
  */
-responsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatablesHelperInstance, tr) {
+ResponsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatablesHelperInstance, tr) {
     tr.next('.row-detail').remove();
-}
+};

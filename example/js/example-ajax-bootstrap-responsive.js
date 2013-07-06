@@ -20,7 +20,7 @@ $(document).ready(function () {
                 aTargets : [ 0 ],             // Column number which needs to be modified
                 bSortable: false,             // Column is not sortable
                 // Custom render function - add checkbox
-                mRender  : function (data, type, full) {
+                mRender  : function (data, type) {
                     return '<input type="checkbox" name="id" value="' + data + '" class="checkbox"/>';
                 },
                 sClass   : 'centered-cell'    // Optional - class to be applied to this table cell
@@ -52,13 +52,13 @@ $(document).ready(function () {
         fnPreDrawCallback: function () {
             // Initialize the responsive datatables helper once.
             if (!responsiveHelper) {
-                responsiveHelper = new responsiveDatatablesHelper(tableContainer, breakpointDefinition);
+                responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
             }
         },
-        fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        fnRowCallback  : function (nRow) {
             responsiveHelper.createExpandIcon(nRow);
         },
-        fnDrawCallback : function (oSettings) {
+        fnDrawCallback : function () {
             // This function will be called every the table redraws.
             // Specifically, we're interested when next/previous page
             // occurs.
@@ -67,7 +67,7 @@ $(document).ready(function () {
             // Respond to windows resize.
             responsiveHelper.respond();
         },
-        fnInitComplete : function (oSettings, json) {
+        fnInitComplete : function () {
             initializeMasterCheckboxEventHandlers();
             initializeCheckboxEventHandlers();
             initializeTableRowEventHandlers();
@@ -149,7 +149,7 @@ $(document).ready(function () {
     }
 
     /**
-     * Initialize table row event handlers.  elementCollection can
+     * Initialize table row event handler.  elementCollection can
      * be one of the following:
      *     - jQuery collection of checkbox elements
      *     - jQuery selector
@@ -166,5 +166,7 @@ $(document).ready(function () {
         } else if (elementCollection === 'string') {
             elementCollection = $(elementCollection, tableContainer.fnGetNodes())
         }
+
+        // Do something with elementCollection as needed.
     }
 });
