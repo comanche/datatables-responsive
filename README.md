@@ -9,6 +9,14 @@ The helper script I have written makes use of the wonderful underscore.js replac
 
 There are two complete working examples using Bootstrap CSS provided.  One uses the DOM and the other uses AJAX.
 
+##Add Viewport Meta Tag For Mobile Support
+
+Add the following viewport meta tag to your HTML's head section:
+
+```html
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"/>
+```
+
 ##Include CSS files
 
 These instructions are done using Datatables and Bootstrap.  You may use whatever you choose.
