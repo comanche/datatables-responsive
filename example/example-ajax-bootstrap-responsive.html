@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="lib/jquery.dataTables/css/DT_bootstrap.css"/>
+    <link rel="stylesheet" href="../files/css/datatables.responsive.css"/>
+    <link rel="stylesheet" href="css/style.css"/>
+    <style>
+        .title {
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        .table th.centered-cell, .table td.centered-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="title">Bootstrap v2.x Responsive Example Using AJAX with Checkboxes</div>
+<div class="span12">
+    <table id="example" cellpadding="0" cellspacing="0" border="0" class="table table-bordered table-striped">
+        <!--thead section is required-->
+        <thead>
+        <tr>
+            <th class="centered-cell"><input type="checkbox" id="masterCheck" class="checkbox"/></th>
+            <th data-class="expand">Rendering engine</th>
+            <th>Browser</th>
+            <th data-hide="phone">Platform(s)</th>
+            <th data-hide="phone,tablet">Engine version</th>
+            <th data-hide="phone,tablet">CSS grade</th>
+        </tr>
+        </thead>
+        <!--tbody section is required-->
+        <tbody></tbody>
+        <!--tfoot section is optional-->
+        <tfoot>
+        <tr>
+            <th></th>
+            <th>Engine</th>
+            <th>Browser</th>
+            <th>Platform(s)</th>
+            <th>Engine version</th>
+            <th>CSS grade</th>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>
+
+<p>
+    <small>
+        More info on Datatables and Bootstrap:
+        <a href="http://www.datatables.net/blog/Twitter_Bootstrap">
+            http://www.datatables.net/blog/Twitter_Bootstrap</a> and
+        <a href="http://www.datatables.net/blog/Twitter_Bootstrap_2">
+            http://www.datatables.net/blog/Twitter_Bootstrap_2</a>.
+    </small>
+</p>
+
+
+<script type="text/javascript" src="lib/lodash/lodash.min.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/jquery.dataTables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="lib/jquery.dataTables/js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="../files/js/datatables.responsive.js"></script>
+<script type="text/javascript" src="js/example-ajax-bootstrap-responsive.js"></script>
+</body>
+</html>

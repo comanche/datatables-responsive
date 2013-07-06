@@ -1,0 +1,22 @@
+table.hasColumnsHidden > tbody > tr > td > span.responsiveExpander {
+    background: url('../img/plus.png') no-repeat 5px center;
+    padding-left: 32px;
+    cursor: pointer;
+}
+
+table.hasColumnsHidden > tbody > tr.detail-show > td span.responsiveExpander {
+    background: url('../img/minus.png') no-repeat 5px center;
+}
+
+table.hasColumnsHidden > tbody > tr.row-detail > td {
+    background: #eee;
+}
+
+table.hasColumnsHidden > tbody > tr.row-detail > td > ul {
+    list-style: none;
+    margin: 0;
+}
+
+table.hasColumnsHidden > tbody > tr.row-detail > td > ul > li > span.columnTitle {
+    font-weight: bold;
+}
