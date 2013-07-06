@@ -11,7 +11,9 @@ There are two complete working examples using Bootstrap CSS provided.  One uses 
 
 ##Include CSS files
 
-These instructions assume using Bootstrap with Datatables.  You may use whatever you choose.  For more info, see [http://www.datatables.net/blog/Twitter_Bootstrap][3] and [http://www.datatables.net/blog/Twitter_Bootstrap_2][4].
+These instructions are done using Datatables and Bootstrap.  You may use whatever you choose.
+
+For more information on Datatables and Bootstrap, see [http://www.datatables.net/blog/Twitter_Bootstrap][3] and [http://www.datatables.net/blog/Twitter_Bootstrap_2][4].
 
 Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
 
@@ -24,7 +26,7 @@ Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
 
 ##Include JS files
 
-Add Lo-Dash, jQuery, Datatables and Datables-Bootstrap and the responsive Datatables helper scripts.
+Add Lo-Dash, jQuery, Datatables, Datables-Bootstrap and the responsive Datatables helper scripts.
 
 ```html
 <script type="text/javascript" src="lodash.min.js"></script>
@@ -50,10 +52,10 @@ var tableContainer = $('#example');
 ##Create Datatables Instance
 Create the datatables instance with the following
 
-- Set bAutoWidth: false
-- Set fnPreDrawCallback to only initialize the responsive datatables helper once
-- Set fnRowCallback to create expand icon.
-- Set fnDrawCallback to respond to window resize events.
+- Set `bAutoWidth` to `false`.
+- Set `fnPreDrawCallback` to only initialize the responsive datatables helper once
+- Set `fnRowCallback` to create expand icon.
+- Set `fnDrawCallback` to respond to window `resize` events.
 
 ```javascript
 tableContainer.dataTable({
@@ -84,9 +86,9 @@ tableContainer.dataTable({
 ```
 
 ## Add Data Attributes to the Table Elements
-5. Add the data-class="expand" attribute to the th element for the respective column that will you want to display the expand icon in.  This th elment cannot be a column that will be hidden.
+5. Add the `data-class="expand"` attribute to the th element for the respective column that will you want to display the expand icon in.  This th elment cannot be a column that will be hidden.
 
-6. Add data-hide="phone,tablet" to the th element for the respective column that will you want to hide when the window is resized.
+6. Add `data-hide="phone,tablet"` to the th element for the respective column that will you want to hide when the window is resized.
 
 ```html
 <div class="span12">
@@ -125,7 +127,7 @@ That's it!
 ##Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
 
-I would also like to thank thanks Brad Vincent and his friend Steve for making the awesome responsive FooTable ([https://github.com/bradvin/FooTable][5]).  In my opinion, their implementation for a responsive table is the best to date.  Much of what I have done here is borrowed from FooTable.  Thanks again!
+Thanks Brad Vincent and his friend Steve for making the awesome responsive FooTable ([https://github.com/bradvin/FooTable][5]).  In my opinion, their implementation for a responsive table is the best to date.  Much of what I have done here is borrowed from FooTable.  Thanks again!
 
 
   [1]: http://datatables.net/
