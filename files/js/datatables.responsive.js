@@ -239,7 +239,7 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
     // Get the td for tr with the same index as the th in the header tr
     // that has the data-class="expand" attribute defined.
     var tds = $('td', tr);
-    if (this.expandColumn !== undefined && this.expandColumn <= tds.length) {
+    if (this.expandColumn !== undefined && this.expandColumn < tds.length) {
         var td = $(tds[this.expandColumn]);
         // Create expand icon if there isn't one already.
         if ($('span.responsiveExpander', td).length == 0) {
