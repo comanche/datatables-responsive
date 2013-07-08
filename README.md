@@ -14,7 +14,7 @@ There are two complete working examples using Bootstrap CSS provided.  One uses 
 Add the following viewport meta tag to your HTML's head section:
 
 ```html
-<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 ```
 
 ##Include CSS files
