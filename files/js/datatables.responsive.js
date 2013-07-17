@@ -3,19 +3,19 @@
  * Version:     0.1.0
  * Author:      Seen Sai Yang
  * Info:        https://github.com/Comanche/datatables-responsive
- * 
+ *
  * Copyright 2013 Seen Sai Yang, all rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
@@ -109,8 +109,8 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     var breakpointsSorted = [];
     _.each(breakpoints, function (value, key) {
         breakpointsSorted.push({
-            name         : key,
-            upperLimit   : value,
+            name: key,
+            upperLimit: value,
             columnsToHide: []
         });
     });
@@ -125,9 +125,9 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Add the default breakpoint which shows all (has no upper limit).
     breakpointsSorted.push({
-        name         : 'default',
-        lowerLimit   : lowerLimit,
-        upperLimit   : undefined,
+        name: 'default',
+        lowerLimit: lowerLimit,
+        upperLimit: undefined,
         columnsToHide: []
     });
 
@@ -138,14 +138,21 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     }, this);
 
     /** Create range of possible column indexes *******************************/
+    // Get all visible column indexes
+    var columns = this.tableContainer.fnSettings().aoColumns;
+    columns.forEach(function (element, index) {
+        if (element.bVisible) {
+            this.columnIndexes.push(index)
+        }
+    }, this);
+
     // We need the range of possible column indexes to calculate the columns
     // to show:
     //     Columns to show = all columns - columns to hide
     var headerElements = $('thead th', this.tableContainer);
-    this.columnIndexes = _.range(_.size(headerElements));
 
     /** Add columns into breakpoints respectively *****************************/
-        // Read column headers' attributes and get needed info
+    // Read column headers' attributes and get needed info
     _.each(headerElements, function (element, index) {
         // Get the column with the attribute data-class="expand" so we know
         // where to display the expand icon.
@@ -162,7 +169,8 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
             var splitBreakingPoints = dataHide.split(/,\s*/);
             _.each(splitBreakingPoints, function (e) {
                 if (this.breakpoints[e] !== undefined) {
-                    this.breakpoints[e].columnsToHide.push(index)
+                    // Translate visible column index to internal column index.
+                    this.breakpoints[e].columnsToHide.push(this.columnIndexes[index]);
                 }
             }, this);
         }
