@@ -1,6 +1,6 @@
 /**
  * File:        datatables.responsive.js
- * Version:     0.1.0
+ * Version:     0.1.1
  * Author:      Seen Sai Yang
  * Info:        https://github.com/Comanche/datatables-responsive
  *
@@ -92,6 +92,13 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints) {
     this.rowTemplate = '<tr class="row-detail"><td><ul><!--column item--></ul></td></tr>';
     this.rowLiTemplate = '<li><span class="columnTitle"><!--column title--></span>: <!--column value--></li>';
 
+    // Responsive behavior on/off flag
+    this.disabled = false;
+
+    // Skip next windows width change flag
+    this.skipNextWindowsWidthChange = false;
+
+    // Initialize settings
     this.init(breakpoints);
 }
 
@@ -109,8 +116,8 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     var breakpointsSorted = [];
     _.each(breakpoints, function (value, key) {
         breakpointsSorted.push({
-            name: key,
-            upperLimit: value,
+            name         : key,
+            upperLimit   : value,
             columnsToHide: []
         });
     });
@@ -125,9 +132,9 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Add the default breakpoint which shows all (has no upper limit).
     breakpointsSorted.push({
-        name: 'default',
-        lowerLimit: lowerLimit,
-        upperLimit: undefined,
+        name         : 'default',
+        lowerLimit   : lowerLimit,
+        upperLimit   : undefined,
         columnsToHide: []
     });
 
@@ -152,7 +159,7 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     var headerElements = $('thead th', this.tableContainer);
 
     /** Add columns into breakpoints respectively *****************************/
-    // Read column headers' attributes and get needed info
+        // Read column headers' attributes and get needed info
     _.each(headerElements, function (element, index) {
         // Get the column with the attribute data-class="expand" so we know
         // where to display the expand icon.
@@ -182,7 +189,7 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
         that.respond();
     });
 
-    // Respond to click event on expander icon
+    // Respond to click event on expander icon.
     this.tableContainer.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
 };
 
@@ -190,26 +197,60 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
  * Respond window size change.  This helps make datatables responsive.
  */
 ResponsiveDatatablesHelper.prototype.respond = function () {
+    if (this.disabled) {
+        return;
+    }
+
     // Get new windows width
     var newWindowWidth = $(window).width();
-    var columnsHiddenCount = 0;
+    var updatedHiddenColumnsCount = 0;
 
     // Loop through breakpoints to see which columns need to be shown/hidden.
+    var newColumnsToHide;
     _.each(this.breakpoints, function (element) {
         if ((!element.lowerLimit || newWindowWidth > element.lowerLimit) && (!element.upperLimit || newWindowWidth <= element.upperLimit)) {
-            this.columnsHiddenIndexes = element.columnsToHide;
-            this.columnsShownIndexes = _.difference(this.columnIndexes, this.columnsHiddenIndexes);
-            this.showHideColumns();
-            columnsHiddenCount = element.columnsToHide.length;
+            newColumnsToHide = element.columnsToHide;
         }
     }, this);
 
-    // If one or more columns have been hidden, add the hasColumnsHidden class to table.
+    // Find out if there a column show/hide should happen.
+    // Skip column show/hide if this window width change follows immediately
+    // after a previous column show/hide.  This will help prevent a loop.
+    var columnShowHide = false;
+    if (!this.skipNextWindowsWidthChange) {
+        // Check difference in length
+        if (this.columnsHiddenIndexes.length !== newColumnsToHide.length) {
+            // Difference in length
+            columnShowHide = true;
+        } else {
+            // Same length but check difference in values
+            var d1 = _.difference(this.columnsHiddenIndexes, newColumnsToHide).length;
+            var d2 = _.difference(newColumnsToHide, this.columnsHiddenIndexes).length;
+            columnShowHide = d1 + d2 > 0;
+        }
+    }
+
+    if (columnShowHide) {
+        // Showing/hiding a column at breakpoint may cause a windows width
+        // change.  Let's flag to skip the a column show/hide that may be is
+        // caused by the next windows width change.
+        this.skipNextWindowsWidthChange = true;
+        this.columnsHiddenIndexes = newColumnsToHide;
+        this.columnsShownIndexes = _.difference(this.columnIndexes, this.columnsHiddenIndexes);
+        this.showHideColumns();
+        updatedHiddenColumnsCount = this.columnsHiddenIndexes.length;
+        this.skipNextWindowsWidthChange = false;
+    }
+
+
+    // We don't skip this part.
+    // If one or more columns have been hidden, add the has-columns-hidden class to table.
     // This class will help keep us know what state the table is in.
-    if (columnsHiddenCount) {
-        this.tableContainer.addClass('hasColumnsHidden');
+    if (this.columnsHiddenIndexes.length) {
+        this.tableContainer.addClass('has-columns-hidden');
         var that = this;
 
+        // Show details for each row that is tagged with the class .detail-show.
         $('tr.detail-show', this.tableContainer).each(function (index, element) {
             var tr = $(element);
             if (tr.next('.row-detail').length === 0) {
@@ -217,7 +258,7 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
             }
         });
     } else {
-        this.tableContainer.removeClass('hasColumnsHidden');
+        this.tableContainer.removeClass('has-columns-hidden');
     }
 };
 
@@ -244,6 +285,10 @@ ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
  * @param {Object} tr table row object
  */
 ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
+    if (this.disabled) {
+        return;
+    }
+
     // Get the td for tr with the same index as the th in the header tr
     // that has the data-class="expand" attribute defined.
     var tds = $('td', tr);
@@ -265,6 +310,10 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
  * @param {Object} event jQuery event object
  */
 ResponsiveDatatablesHelper.prototype.showRowDetailEventHandler = function (event) {
+    if (this.disabled) {
+        return;
+    }
+
     // Get the parent tr of which this td belongs to.
     var tr = $(this).closest('tr');
 
@@ -320,3 +369,30 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
 ResponsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatablesHelperInstance, tr) {
     tr.next('.row-detail').remove();
 };
+
+/**
+ * Disable responsive behavior and restores changes made.
+ *
+ * @param {Boolean} disable
+ */
+ResponsiveDatatablesHelper.prototype.disable = function (disable) {
+    this.disabled = disable || false;
+
+    if (this.disabled) {
+        // Remove all trs that have row details.
+        $('tbody tr.row-detail', this.tableContainer).remove();
+
+        // Remove all trs that are marked to have row details shown.
+        $('tbody tr', this.tableContainer).removeClass('detail-show');
+
+        // Remove all expander icons
+        $('tbody tr span.responsiveExpander', this.tableContainer).remove();
+
+        this.columnsHiddenIndexes = [];
+        this.columnsShownIndexes = this.columnIndexes;
+        this.showHideColumns();
+        this.tableContainer.removeClass('has-columns-hidden');
+
+        this.tableContainer.off('click', 'span.responsiveExpander', this.showRowDetailEventHandler);
+    }
+}
