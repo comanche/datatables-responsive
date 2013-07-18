@@ -206,7 +206,7 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
     var updatedHiddenColumnsCount = 0;
 
     // Loop through breakpoints to see which columns need to be shown/hidden.
-    var newColumnsToHide;
+    var newColumnsToHide = [];
     _.each(this.breakpoints, function (element) {
         if ((!element.lowerLimit || newWindowWidth > element.lowerLimit) && (!element.upperLimit || newWindowWidth <= element.upperLimit)) {
             newColumnsToHide = element.columnsToHide;
