@@ -132,6 +132,8 @@ tableContainer.dataTable({
 
 That's it!
 
+If you need to destroy and recreate a data table on the same table element, see the `ajax-bootstrap-recreate-table.html` example.
+
 ##Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
 
