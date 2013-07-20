@@ -7,6 +7,7 @@ $(document).ready(function () {
         phone : 480
     };
     var tableContainer;
+    var destroyingDataTable = false;
 
     // Initialize buttons
     $('button').click(function (event) {
@@ -23,12 +24,31 @@ $(document).ready(function () {
 
         // If a data table already exists, disable the responsive helper.
         if ($.fn.DataTable.fnIsDataTable(tableContainer[0])) {
+            // Set the destroying flag to prevent the responsive table from
+            // being initialized during this phase.
+            destroyingDataTable = true;
+
+            // Get data table instance
+            tableContainer.dataTable();
+
+            // Since we are destroying the table, let's clear it to speed things
+            // up.
+            tableContainer.fnClearTable(false);
+
             // Disabling the helper will reset the the responsive changes to the
             // DOM.
             responsiveHelper.disable(true);
-            // Remove the reponsive helper.
+
+            // Remove the responsive helper.
             responsiveHelper = undefined;
+
+            // Now that all things have been restored, let's destroy the table
+            tableContainer.fnDestroy();
+
+            // Clear flag
+            destroyingDataTable = false;
         }
+
 
         // Create data table
         tableContainer.dataTable({
@@ -75,12 +95,14 @@ $(document).ready(function () {
             },
             fnPreDrawCallback: function () {
                 // Initialize the responsive data table helper once.
-                if (!responsiveHelper) {
+                if (!responsiveHelper && !destroyingDataTable) {
                     responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
                 }
             },
             fnRowCallback    : function (nRow) {
-                responsiveHelper.createExpandIcon(nRow);
+                if (responsiveHelper) {
+                    responsiveHelper.createExpandIcon(nRow);
+                }
             },
             fnDrawCallback   : function () {
                 // This function will be called every the table redraws.
@@ -89,7 +111,9 @@ $(document).ready(function () {
                 toggleMasterCheckBasedOnAllOtherCheckboxes();
 
                 // Respond to windows resize.
-                responsiveHelper.respond();
+                if (responsiveHelper) {
+                    responsiveHelper.respond();
+                }
             },
             fnInitComplete   : function () {
                 initializeMasterCheckboxEventHandlers();
