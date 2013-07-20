@@ -49,9 +49,9 @@
  */
 function ResponsiveDatatablesHelper(tableSelector, breakpoints) {
     if (typeof tableSelector === 'string') {
-        this.tableContainer = $(tableSelector);
+        this.tableElement = $(tableSelector);
     } else {
-        this.tableContainer = tableSelector;
+        this.tableElement = tableSelector;
     }
 
     // State of column indexes and which are shown or hidden.
@@ -146,7 +146,7 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     /** Create range of possible column indexes *******************************/
     // Get all visible column indexes
-    var columns = this.tableContainer.fnSettings().aoColumns;
+    var columns = this.tableElement.fnSettings().aoColumns;
     columns.forEach(function (element, index) {
         if (element.bVisible) {
             this.columnIndexes.push(index)
@@ -156,7 +156,7 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     // We need the range of possible column indexes to calculate the columns
     // to show:
     //     Columns to show = all columns - columns to hide
-    var headerElements = $('thead th', this.tableContainer);
+    var headerElements = $('thead th', this.tableElement);
 
     /** Add columns into breakpoints respectively *****************************/
         // Read column headers' attributes and get needed info
@@ -190,7 +190,7 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     });
 
     // Respond to click event on expander icon.
-    this.tableContainer.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
+    this.tableElement.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
 };
 
 /**
@@ -247,18 +247,18 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
     // If one or more columns have been hidden, add the has-columns-hidden class to table.
     // This class will help keep us know what state the table is in.
     if (this.columnsHiddenIndexes.length) {
-        this.tableContainer.addClass('has-columns-hidden');
+        this.tableElement.addClass('has-columns-hidden');
         var that = this;
 
         // Show details for each row that is tagged with the class .detail-show.
-        $('tr.detail-show', this.tableContainer).each(function (index, element) {
+        $('tr.detail-show', this.tableElement).each(function (index, element) {
             var tr = $(element);
             if (tr.next('.row-detail').length === 0) {
                 ResponsiveDatatablesHelper.prototype.showRowDetail(that, tr);
             }
         });
     } else {
-        this.tableContainer.removeClass('has-columns-hidden');
+        this.tableElement.removeClass('has-columns-hidden');
     }
 };
 
@@ -269,12 +269,12 @@ ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
     // Calculate the columns to show
     // Show columns that may have been previously hidden.
     this.columnsShownIndexes.forEach(function (element) {
-        this.tableContainer.fnSetColumnVis(element, true);
+        this.tableElement.fnSetColumnVis(element, true);
     }, this);
 
     // Hide columns that need to been previously shown.
     this.columnsHiddenIndexes.forEach(function (element) {
-        this.tableContainer.fnSetColumnVis(element, false);
+        this.tableElement.fnSetColumnVis(element, false);
     }, this);
 };
 
@@ -335,7 +335,7 @@ ResponsiveDatatablesHelper.prototype.showRowDetailEventHandler = function (event
  */
 ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatablesHelperInstance, tr) {
     // Get column because we need their titles.
-    var tableContainer = responsiveDatatablesHelperInstance.tableContainer;
+    var tableContainer = responsiveDatatablesHelperInstance.tableElement;
     var columns = tableContainer.fnSettings().aoColumns;
 
     // Create the new tr.
@@ -373,26 +373,26 @@ ResponsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatab
 /**
  * Disable responsive behavior and restores changes made.
  *
- * @param {Boolean} disable
+ * @param {Boolean} disable, default is true
  */
 ResponsiveDatatablesHelper.prototype.disable = function (disable) {
-    this.disabled = disable || false;
+    this.disabled = (disable === undefined) || true;
 
     if (this.disabled) {
         // Remove all trs that have row details.
-        $('tbody tr.row-detail', this.tableContainer).remove();
+        $('tbody tr.row-detail', this.tableElement).remove();
 
         // Remove all trs that are marked to have row details shown.
-        $('tbody tr', this.tableContainer).removeClass('detail-show');
+        $('tbody tr', this.tableElement).removeClass('detail-show');
 
         // Remove all expander icons
-        $('tbody tr span.responsiveExpander', this.tableContainer).remove();
+        $('tbody tr span.responsiveExpander', this.tableElement).remove();
 
         this.columnsHiddenIndexes = [];
         this.columnsShownIndexes = this.columnIndexes;
         this.showHideColumns();
-        this.tableContainer.removeClass('has-columns-hidden');
+        this.tableElement.removeClass('has-columns-hidden');
 
-        this.tableContainer.off('click', 'span.responsiveExpander', this.showRowDetailEventHandler);
+        this.tableElement.off('click', 'span.responsiveExpander', this.showRowDetailEventHandler);
     }
 }
