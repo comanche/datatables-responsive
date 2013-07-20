@@ -6,9 +6,9 @@ $(document).ready(function () {
         tablet: 1024,
         phone : 480
     };
-    var tableContainer = $('#example');
+    var tableElement = $('#example');
 
-    tableContainer.dataTable({
+    tableElement.dataTable({
         sDom           : '<"row"<"span6"l><"span6"f>r>t<"row"<"span6"i><"span6"p>>',
         sPaginationType: 'bootstrap',
         oLanguage      : {
@@ -18,7 +18,7 @@ $(document).ready(function () {
         fnPreDrawCallback: function () {
             // Initialize the responsive datatables helper once.
             if (!responsiveHelper) {
-                responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+                responsiveHelper = new ResponsiveDatatablesHelper(tableElement, breakpointDefinition);
             }
         },
         fnRowCallback  : function (nRow) {
