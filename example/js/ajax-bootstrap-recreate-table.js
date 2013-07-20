@@ -6,7 +6,8 @@ $(document).ready(function () {
         tablet: 1024,
         phone : 480
     };
-    var tableContainer;
+
+    var tableElement;
     var destroyingDataTable = false;
 
     // Initialize buttons
@@ -20,20 +21,21 @@ $(document).ready(function () {
      * @param {String} ajaxUrl
      */
     function createDataTable(ajaxUrl) {
-        tableContainer = $('#example');
+        tableElement = $('#example');
 
-        // If a data table already exists, disable the responsive helper.
-        if ($.fn.DataTable.fnIsDataTable(tableContainer[0])) {
+        // This next part helps to clean things up so we can recreate a data
+        // table on the same table element.
+        if ($.fn.DataTable.fnIsDataTable(tableElement[0])) {
             // Set the destroying flag to prevent the responsive table from
             // being initialized during this phase.
             destroyingDataTable = true;
 
             // Get data table instance
-            tableContainer.dataTable();
+            tableElement.dataTable();
 
             // Since we are destroying the table, let's clear it to speed things
             // up.
-            tableContainer.fnClearTable(false);
+            tableElement.fnClearTable(false);
 
             // Disabling the helper will reset the the responsive changes to the
             // DOM.
@@ -43,7 +45,7 @@ $(document).ready(function () {
             responsiveHelper = undefined;
 
             // Now that all things have been restored, let's destroy the table
-            tableContainer.fnDestroy();
+            tableElement.fnDestroy();
 
             // Clear flag
             destroyingDataTable = false;
@@ -51,7 +53,7 @@ $(document).ready(function () {
 
 
         // Create data table
-        tableContainer.dataTable({
+        tableElement.dataTable({
             sDom             : '<"row"<"span6"l><"span6"f>r>t<"row"<"span6"i><"span6"p>>',
             sPaginationType  : 'bootstrap',
             oLanguage        : {
@@ -96,7 +98,7 @@ $(document).ready(function () {
             fnPreDrawCallback: function () {
                 // Initialize the responsive data table helper once.
                 if (!responsiveHelper && !destroyingDataTable) {
-                    responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+                    responsiveHelper = new ResponsiveDatatablesHelper(tableElement, breakpointDefinition);
                 }
             },
             fnRowCallback    : function (nRow) {
@@ -136,11 +138,11 @@ $(document).ready(function () {
     function toggleMasterCheckBasedOnAllOtherCheckboxes() {
         // What we need to do here is check to see if every checkbox is checked.
         // If it is, the master checkbox in the header should be checked as well.
-        var allCheckboxes = $('tbody input:checkbox', tableContainer);
+        var allCheckboxes = $('tbody input:checkbox', tableElement);
         var totalCheckboxCount = allCheckboxes.length;
         if (totalCheckboxCount) {
             var checkedChecboxCount = allCheckboxes.filter(':checked').length;
-            $('#masterCheck', tableContainer).prop('checked', totalCheckboxCount === checkedChecboxCount);
+            $('#masterCheck', tableElement).prop('checked', totalCheckboxCount === checkedChecboxCount);
         }
     }
 
@@ -149,7 +151,7 @@ $(document).ready(function () {
      */
     function initializeMasterCheckboxEventHandlers() {
         // Enable master checkbox to check/uncheck all checkboxes
-        $('#masterCheck', tableContainer).click(function () {
+        $('#masterCheck', tableElement).click(function () {
             // Toggle all checkboxes by triggering a click event on them.  The click
             // event will fire the changed event that we can handle.  Directly changing
             // the checked property like this
@@ -160,9 +162,9 @@ $(document).ready(function () {
             // no click event, there's no changed events on the checkboxes.  We need the
             // changed events so that we can keep track of the checked checkboxes.
             if (this.checked) {
-                $('tbody input:checkbox:not(:checked)', tableContainer).not(this).trigger('click');
+                $('tbody input:checkbox:not(:checked)', tableElement).not(this).trigger('click');
             } else {
-                $('tbody input:checkbox:checked', tableContainer).not(this).trigger('click');
+                $('tbody input:checkbox:checked', tableElement).not(this).trigger('click');
             }
         });
     }
@@ -181,9 +183,9 @@ $(document).ready(function () {
      */
     function initializeCheckboxEventHandlers(elementCollection) {
         if (elementCollection === undefined) {
-            elementCollection = $('input:checkbox', tableContainer.fnGetNodes())
+            elementCollection = $('input:checkbox', tableElement.fnGetNodes())
         } else if (elementCollection === 'string') {
-            elementCollection = $(elementCollection, tableContainer.fnGetNodes())
+            elementCollection = $(elementCollection, tableElement.fnGetNodes())
         }
 
         elementCollection.off('change').change(function (event) {
@@ -215,9 +217,9 @@ $(document).ready(function () {
      */
     function initializeTableRowEventHandlers(elementCollection) {
         if (elementCollection === undefined) {
-            elementCollection = $(tableContainer.fnGetNodes())
+            elementCollection = $(tableElement.fnGetNodes())
         } else if (elementCollection === 'string') {
-            elementCollection = $(elementCollection, tableContainer.fnGetNodes())
+            elementCollection = $(elementCollection, tableElement.fnGetNodes())
         }
 
         // Do something with elementCollection as needed.
