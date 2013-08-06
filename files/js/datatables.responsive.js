@@ -1,6 +1,6 @@
 /**
  * File:        datatables.responsive.js
- * Version:     0.1.1
+ * Version:     0.1.2
  * Author:      Seen Sai Yang
  * Info:        https://github.com/Comanche/datatables-responsive
  *
@@ -242,7 +242,7 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
 
     // We don't skip this part.
     // If one or more columns have been hidden, add the has-columns-hidden class to table.
-    // This class will help keep us know what state the table is in.
+    // This class will show what state the table is in.
     if (this.columnsHiddenIndexes.length) {
         this.tableElement.addClass('has-columns-hidden');
         var that = this;
@@ -270,11 +270,12 @@ ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
         this.tableElement.fnSetColumnVis(element, true, false);
     }, this);
 
-    // Hide columns that need to been previously shown.
+    // Hide columns that may have been previously shown.
     this.columnsHiddenIndexes.forEach(function (element) {
         this.tableElement.fnSetColumnVis(element, false, false);
     }, this);
 
+    // Rebuild details to reflect shown/hidden column changes.
     var that = this;
     $('tr.row-detail').remove();
     if (this.tableElement.hasClass('has-columns-hidden')) {
