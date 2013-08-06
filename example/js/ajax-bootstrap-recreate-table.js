@@ -121,7 +121,6 @@ $(document).ready(function () {
                 initializeMasterCheckboxEventHandlers();
                 initializeCheckboxEventHandlers();
                 initializeTableRowEventHandlers();
-                responsiveHelper.disable();
             }
         });
     }
