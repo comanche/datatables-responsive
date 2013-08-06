@@ -188,9 +188,6 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
     $(window).bind("resize", function () {
         that.respond();
     });
-
-    // Respond to click event on expander icon.
-    this.tableElement.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
 };
 
 /**
@@ -213,7 +210,7 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
         }
     }, this);
 
-    // Find out if there a column show/hide should happen.
+    // Find out if a column show/hide should happen.
     // Skip column show/hide if this window width change follows immediately
     // after a previous column show/hide.  This will help prevent a loop.
     var columnShowHide = false;
@@ -232,7 +229,7 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
 
     if (columnShowHide) {
         // Showing/hiding a column at breakpoint may cause a windows width
-        // change.  Let's flag to skip the a column show/hide that may be is
+        // change.  Let's flag to skip the column show/hide that may be
         // caused by the next windows width change.
         this.skipNextWindowsWidthChange = true;
         this.columnsHiddenIndexes = newColumnsToHide;
@@ -259,6 +256,7 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
         });
     } else {
         this.tableElement.removeClass('has-columns-hidden');
+        $('tr.row-detail').remove();
     }
 };
 
@@ -269,13 +267,21 @@ ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
     // Calculate the columns to show
     // Show columns that may have been previously hidden.
     this.columnsShownIndexes.forEach(function (element) {
-        this.tableElement.fnSetColumnVis(element, true);
+        this.tableElement.fnSetColumnVis(element, true, false);
     }, this);
 
     // Hide columns that need to been previously shown.
     this.columnsHiddenIndexes.forEach(function (element) {
-        this.tableElement.fnSetColumnVis(element, false);
+        this.tableElement.fnSetColumnVis(element, false, false);
     }, this);
+
+    var that = this;
+    $('tr.row-detail').remove();
+    if (this.tableElement.hasClass('has-columns-hidden')) {
+        $('tr.detail-show', this.tableElement).each(function (index, element) {
+            ResponsiveDatatablesHelper.prototype.showRowDetail(that, $(element));
+        });
+    }
 };
 
 /**
@@ -297,6 +303,9 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
         // Create expand icon if there isn't one already.
         if ($('span.responsiveExpander', td).length == 0) {
             td.prepend(this.expandIconTemplate);
+
+            // Respond to click event on expander icon.
+            td.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
         }
     }
 };
@@ -325,6 +334,9 @@ ResponsiveDatatablesHelper.prototype.showRowDetailEventHandler = function (event
     }
 
     tr.toggleClass('detail-show');
+
+    // Prevent click event from bubbling up to higher-level DOM elements.
+    event.stopPropagation();
 };
 
 /**
