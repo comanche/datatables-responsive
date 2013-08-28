@@ -138,18 +138,18 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Copy the sorted breakpoint array into the breakpoints object using the
     // name as the key.
-    breakpointsSorted.forEach(function (element) {
-        this.breakpoints[element.name] = element;
-    }, this);
+    for (var i = 0; i < breakpointsSorted.length; i++) {
+        this.breakpoints[breakpointsSorted[i].name] = breakpointsSorted[i];
+    }
 
     /** Create range of possible column indexes *******************************/
     // Get all visible column indexes
     var columns = this.tableElement.fnSettings().aoColumns;
-    columns.forEach(function (element, index) {
-        if (element.bVisible) {
-            this.columnIndexes.push(index)
+    for (var i = 0; i < columns.length; i++) {
+        if (columns[i].bVisible) {
+            this.columnIndexes.push(i)
         }
-    }, this);
+    }
 
     // We need the range of possible column indexes to calculate the columns
     // to show:
@@ -264,14 +264,14 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
 ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
     // Calculate the columns to show
     // Show columns that may have been previously hidden.
-    this.columnsShownIndexes.forEach(function (element) {
-        this.tableElement.fnSetColumnVis(element, true, false);
-    }, this);
+    for (var i = 0; i < columnsShownIndexes.length; i++) {
+        this.tableElement.fnSetColumnVis(columnsShownIndexes[i], true, false);
+    }
 
     // Hide columns that may have been previously shown.
-    this.columnsHiddenIndexes.forEach(function (element) {
-        this.tableElement.fnSetColumnVis(element, false, false);
-    }, this);
+    for (var i = 0; i < columnsHiddenIndexes.length; i++) {
+        this.tableElement.fnSetColumnVis(columnsHiddenIndexes[i], false, false);
+    }
 
     // Rebuild details to reflect shown/hidden column changes.
     var that = this;
