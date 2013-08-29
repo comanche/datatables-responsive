@@ -8,11 +8,11 @@
  *
  * This source file is free software, under either the GPL v2 license or a
  * BSD style license.
- * 
- * This source file is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+ *
+ * This source file is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
  * or FITNESS FOR A PARTICULAR PURPOSE. See the license files for details.
- * 
+ *
  * You should have received a copy of the GNU General Public License and the
  * BSD license along with this program.  These licenses are also available at:
  *     https://raw.github.com/Comanche/datatables-responsive/master/license-gpl2.txt
@@ -264,13 +264,13 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
 ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
     // Calculate the columns to show
     // Show columns that may have been previously hidden.
-    for (var i = 0; i < columnsShownIndexes.length; i++) {
-        this.tableElement.fnSetColumnVis(columnsShownIndexes[i], true, false);
+    for (var i = 0; i < this.columnsShownIndexes.length; i++) {
+        this.tableElement.fnSetColumnVis(this.columnsShownIndexes[i], true, false);
     }
 
     // Hide columns that may have been previously shown.
-    for (var i = 0; i < columnsHiddenIndexes.length; i++) {
-        this.tableElement.fnSetColumnVis(columnsHiddenIndexes[i], false, false);
+    for (var i = 0; i < this.columnsHiddenIndexes.length; i++) {
+        this.tableElement.fnSetColumnVis(this.columnsHiddenIndexes[i], false, false);
     }
 
     // Rebuild details to reflect shown/hidden column changes.
