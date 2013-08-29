@@ -80,7 +80,7 @@ tableContainer.dataTable({
     fnPreDrawCallback: function () {
         // Initialize the responsive datatables helper once.
         if (!responsiveHelper) {
-            responsiveHelper = new responsiveDatatablesHelper(tableContainer, breakpointDefinition);
+            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
         }
     },
     fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
