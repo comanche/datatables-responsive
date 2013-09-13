@@ -264,12 +264,12 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
 ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
     // Calculate the columns to show
     // Show columns that may have been previously hidden.
-    for (var i = 0; i < this.columnsShownIndexes.length; i++) {
+    for (var i = 0, l = this.columnsShownIndexes.length; i < l; i++) {
         this.tableElement.fnSetColumnVis(this.columnsShownIndexes[i], true, false);
     }
 
     // Hide columns that may have been previously shown.
-    for (var i = 0; i < this.columnsHiddenIndexes.length; i++) {
+    for (var i = 0, l = this.columnsHiddenIndexes.length; i < l; i++) {
         this.tableElement.fnSetColumnVis(this.columnsHiddenIndexes[i], false, false);
     }
 
