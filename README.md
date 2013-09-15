@@ -94,7 +94,7 @@ tableContainer.dataTable({
 ```
 
 ## Add Data Attributes to the Table Elements
-5. Add the `data-class="expand"` attribute to the th element for the respective column that will you want to display the expand icon in.  This th elment cannot be a column that will be hidden.
+5. Add the `data-class="expand"` attribute to the th element for the respective column that will you want to display the expand icon in.  This th element cannot be a column that will be hidden.
 
 6. Add `data-hide="phone,tablet"` to the th element for the respective column that will you want to hide when the window is resized.
 
