@@ -91,7 +91,7 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints) {
     this.rowLiTemplate = '<li><span class="columnTitle"><!--column title--></span>: <!--column value--></li>';
 
     // Responsive behavior on/off flag
-    this.disabled = false;
+    this.disabled = true;
 
     // Skip next windows width change flag
     this.skipNextWindowsWidthChange = false;
@@ -181,12 +181,24 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
         }
     }, this);
 
-    // Watch the window resize event and response to it.
-    var that = this;
-    $(window).bind("resize", function () {
-        that.respond();
-    });
+    // Enable responsive behavior.
+    this.disable(false);
 };
+
+ResponsiveDatatablesHelper.prototype.setWindowsResizeHandler = function(bindFlag) {
+    if (bindFlag === undefined) {
+        bindFlag = true;
+    }
+
+    if (bindFlag) {
+        var that = this;
+        $(window).bind("resize", function () {
+            that.respond();
+        });
+    } else {
+        $(window).unbind("resize");
+    }
+}
 
 /**
  * Respond window size change.  This helps make datatables responsive.
@@ -382,14 +394,17 @@ ResponsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatab
 };
 
 /**
- * Disable responsive behavior and restores changes made.
+ * Enable/disable responsive behavior and restores changes made.
  *
  * @param {Boolean} disable, default is true
  */
 ResponsiveDatatablesHelper.prototype.disable = function (disable) {
-    this.disabled = (disable === undefined) || true;
+    this.disabled = (disable === undefined) || disable;
 
     if (this.disabled) {
+        // Remove windows resize handler
+        this.setWindowsResizeHandler(false);
+
         // Remove all trs that have row details.
         $('tbody tr.row-detail', this.tableElement).remove();
 
@@ -405,5 +420,8 @@ ResponsiveDatatablesHelper.prototype.disable = function (disable) {
         this.tableElement.removeClass('has-columns-hidden');
 
         this.tableElement.off('click', 'span.responsiveExpander', this.showRowDetailEventHandler);
+    } else {
+        // Add windows resize handler
+        this.setWindowsResizeHandler();
     }
 }
