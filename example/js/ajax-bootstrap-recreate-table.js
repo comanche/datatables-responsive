@@ -117,10 +117,21 @@ $(document).ready(function () {
                     responsiveHelper.respond();
                 }
             },
-            fnInitComplete   : function () {
-                initializeMasterCheckboxEventHandlers();
+            fnInitComplete   : function (oSettings) {
+                // Register event handlers
+                initializeMasterCheckboxEventHandler();
                 initializeCheckboxEventHandlers();
                 initializeTableRowEventHandlers();
+
+                // Unregister event handlers when table is destroyed.
+                oSettings.aoDestroyCallback.push({
+                    'sName': 'UnregisterEventHandlers',
+                    'fn'   : function () {
+                        initializeMasterCheckboxEventHandler(false);
+                        initializeCheckboxEventHandlers(false);
+                        initializeTableRowEventHandlers(false);
+                    }
+                });
             }
         });
     }
@@ -147,30 +158,52 @@ $(document).ready(function () {
 
     /**
      * Initialize master checkbox event handlers.
+     *
+     * The on parameter is used to register/unregister the event handler.  The
+     * default is true.
+     *
+     * @param {Boolean} on
      */
-    function initializeMasterCheckboxEventHandlers() {
-        // Enable master checkbox to check/uncheck all checkboxes
-        $('#masterCheck', tableElement).click(function () {
-            // Toggle all checkboxes by triggering a click event on them.  The click
-            // event will fire the changed event that we can handle.  Directly changing
-            // the checked property like this
-            //
-            //    $('tbody input:checkbox', tableContainer).not(this).prop('checked', this.checked);
-            //
-            // toggles all checkboxes but does not trigger click events.  Because there's
-            // no click event, there's no changed events on the checkboxes.  We need the
-            // changed events so that we can keep track of the checked checkboxes.
-            if (this.checked) {
-                $('tbody input:checkbox:not(:checked)', tableElement).not(this).trigger('click');
-            } else {
-                $('tbody input:checkbox:checked', tableElement).not(this).trigger('click');
-            }
-        });
+    function initializeMasterCheckboxEventHandler(on) {
+        on = on === undefined ? true : on;
+
+        if (on) {
+            // Enable master checkbox
+            $('#masterCheck', tableElement).prop('disabled', false);
+
+            // Register master checkbox to check/uncheck all checkboxes
+            $('#masterCheck', tableElement).on('click', function () {
+                // Toggle all checkboxes by triggering a click event on them.  The click
+                // event will fire the changed event that we can handle.  Directly changing
+                // the checked property like this
+                //
+                //    $('tbody input:checkbox', tableContainer).not(this).prop('checked', this.checked);
+                //
+                // toggles all checkboxes but does not trigger click events.  Because there's
+                // no click event, there's no changed events on the checkboxes.  We need the
+                // changed events so that we can keep track of the checked checkboxes.
+                if (this.checked) {
+                    $('tbody input:checkbox:not(:checked)', tableElement).not(this).trigger('click');
+                } else {
+                    $('tbody input:checkbox:checked', tableElement).not(this).trigger('click');
+                }
+            });
+        } else {
+            // Disable master checkbox
+            $('#masterCheck', tableElement).prop('disabled', true);
+
+            // Unregister master checkbox to check/uncheck all checkboxes
+            $('#masterCheck', tableElement).off('click');
+        }
     }
 
     /**
-     * Initialize checkbox event handlers.  elementCollection can
-     * be one of the following:
+     * Initialize checkbox event handlers.
+     *
+     * The on parameter is used to register/unregister the event handler.  The
+     * default is true.
+     *
+     * The elementCollection parameter can be one of the following:
      *     - jQuery collection of checkbox elements
      *     - jQuery selector
      *     - undefined
@@ -178,33 +211,48 @@ $(document).ready(function () {
      * If elementCollection is undefined, all checkboxes in DataTable
      * will be selected.
      *
+     * @param {Boolean} on
      * @param {Object|String|undefined} elementCollection
      */
-    function initializeCheckboxEventHandlers(elementCollection) {
+    function initializeCheckboxEventHandlers(on, elementCollection) {
+        on = on === undefined ? true : on;
+
         if (elementCollection === undefined) {
             elementCollection = $('input:checkbox', tableElement.fnGetNodes())
         } else if (elementCollection === 'string') {
             elementCollection = $(elementCollection, tableElement.fnGetNodes())
         }
 
-        elementCollection.off('change').change(function (event) {
-            // Keep track of the checked checkboxes.
-            if (event.target.checked) {
-                // Do something with the checked item
-                // callSomeFunction(event.target.name, event.target.value);
-            } else {
-                // Do something with the unchecked item
-                // callSomeFunction(event.target.name, event.target.value);
-            }
+        if (on) {
+            // Register elementCollection handlers
+            elementCollection.on('change', function (event) {
+                // Keep track of the checked checkboxes.
+                if (event.target.checked) {
+                    // Do something with the checked item
+                    // callSomeFunction(event.target.name, event.target.value);
+                    console.log('Checkbox ' + event.target.name + ' checked', event.target.value);
+                } else {
+                    // Do something with the unchecked item
+                    // callSomeFunction(event.target.name, event.target.value);
+                    console.log('Checkbox ' + event.target.name + ' unchecked', event.target.value);
+                }
 
-            // Affect the other parts of the table/page...
-            toggleMasterCheckBasedOnAllOtherCheckboxes();
-        });
+                // Affect the other parts of the table/page...
+                toggleMasterCheckBasedOnAllOtherCheckboxes();
+            });
+        } else {
+            // Unregister elementCollection handlers
+            elementCollection.off('change');
+        }
     }
 
     /**
-     * Initialize table row event handler.  elementCollection can
-     * be one of the following:
+     * Initialize table row event handler.
+     *
+     * The on parameter is used to register/unregister the event handler.  The
+     * default is true.
+     *
+     * The elementCollection can be one of the following:
      *     - jQuery collection of checkbox elements
      *     - jQuery selector
      *     - undefined
@@ -212,15 +260,22 @@ $(document).ready(function () {
      * If elementCollection is undefined, all table rows in DataTable
      * will be selected.
      *
+     * @param {Boolean} on
      * @param {Object|String|undefined} elementCollection
      */
-    function initializeTableRowEventHandlers(elementCollection) {
+    function initializeTableRowEventHandlers(on, elementCollection) {
+        on = on === undefined ? true : on;
+
         if (elementCollection === undefined) {
             elementCollection = $(tableElement.fnGetNodes())
         } else if (elementCollection === 'string') {
             elementCollection = $(elementCollection, tableElement.fnGetNodes())
         }
 
-        // Do something with elementCollection as needed.
+        if (on) {
+            // Register elementCollection handlers as needed.
+        } else {
+            // Unregister elementCollection handlers as needed.
+        }
     }
 });
