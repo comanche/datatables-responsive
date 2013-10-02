@@ -138,14 +138,14 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Copy the sorted breakpoint array into the breakpoints object using the
     // name as the key.
-    for (var i = 0; i < breakpointsSorted.length; i++) {
+    for (var i = 0, l = breakpointsSorted.length; i < l; i++) {
         this.breakpoints[breakpointsSorted[i].name] = breakpointsSorted[i];
     }
 
     /** Create range of possible column indexes *******************************/
     // Get all visible column indexes
     var columns = this.tableElement.fnSettings().aoColumns;
-    for (var i = 0; i < columns.length; i++) {
+    for (var i = 0, l = columns.length; i < l; i++) {
         if (columns[i].bVisible) {
             this.columnIndexes.push(i)
         }
@@ -309,14 +309,22 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
     // Get the td for tr with the same index as the th in the header tr
     // that has the data-class="expand" attribute defined.
     var tds = $('td', tr);
-    if (this.expandColumn !== undefined && this.expandColumn < tds.length) {
-        var td = $(tds[this.expandColumn]);
-        // Create expand icon if there isn't one already.
-        if ($('span.responsiveExpander', td).length == 0) {
-            td.prepend(this.expandIconTemplate);
+    var that = this;
+    // Loop through tds and create an expand icon on the td that has a column
+    // index equal to the expand column given.
+    for (var i = 0, l = tds.length; i < l; i++) {
+        var td = tds[i];
+        var tdIndex = that.tableElement.fnGetPosition(td)[2];
+        td = $(td);
+        if (tdIndex === that.expandColumn) {
+            // Create expand icon if there isn't one already.
+            if ($('span.responsiveExpander', td).length == 0) {
+                td.prepend(that.expandIconTemplate);
 
-            // Respond to click event on expander icon.
-            td.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
+                // Respond to click event on expander icon.
+                td.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: that}, that.showRowDetailEventHandler);
+            }
+            break;
         }
     }
 };
