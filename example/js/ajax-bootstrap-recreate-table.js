@@ -142,6 +142,28 @@ $(document).ready(function () {
 
 
     /**
+     * Enable master checkbox if there are more than one row in the data table.
+     *
+     * The enable parameter is used to enable/disable the element.
+     *
+     * Returns true if enable was successful.
+     *
+     * @param {Boolean} enable
+     * @returns {Boolean}
+     */
+    function enableMasterCheckbox (enable) {
+        enable = enable === undefined ? true : enable;
+
+        if (enable && $('tbody tr', tableElement).length) {
+            $('#masterCheck', tableElement).prop('disabled', false);
+            return true;
+        } else {
+            $('#masterCheck', tableElement).prop('disabled', true);
+            return false;
+        }
+    }
+
+    /**
      * Toggles the master checkbox if all checkboxes in the table that
      * are visible are checked.
      */
@@ -169,7 +191,7 @@ $(document).ready(function () {
 
         if (on) {
             // Enable master checkbox
-            $('#masterCheck', tableElement).prop('disabled', false);
+            enableMasterCheckbox();
 
             // Register master checkbox to check/uncheck all checkboxes
             $('#masterCheck', tableElement).on('click', function () {
@@ -190,7 +212,7 @@ $(document).ready(function () {
             });
         } else {
             // Disable master checkbox
-            $('#masterCheck', tableElement).prop('disabled', true);
+            enableMasterCheckbox(false);
 
             // Unregister master checkbox to check/uncheck all checkboxes
             $('#masterCheck', tableElement).off('click');
