@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/bootstrap/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" type="text/css" href="lib/jquery.dataTables/css/DT_bootstrap.css"/>
+    <link rel="stylesheet" href="../files/css/datatables.responsive.css"/>
+    <style>
+        .title {
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        .table th.centered-cell, .table td.centered-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="span12 title">Bootstrap v2.x Responsive Example Using DOM with Checkboxes</div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th data-class="expand">Rendering engine</th>
+                    <th>Browser</th>
+                    <th data-hide="phone">Platform(s)</th>
+                    <th class="centered-cell" data-hide="phone,tablet">Engine version</th>
+                    <th class="centered-cell" data-hide="phone,tablet">CSS grade</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 4.0</td>
+                    <td>Win 95+</td>
+                    <td class="centered-cell">4</td>
+                    <td class="centered-cell">X</td>
+                </tr>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 5.0</td>
+                    <td>Win 95+</td>
+                    <td class="centered-cell">5</td>
+                    <td class="centered-cell">C</td>
+                </tr>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 5.5</td>
+                    <td>Win 95+</td>
+                    <td class="centered-cell">5.5</td>
+                    <td class="centered-cell">A</td>
+                </tr>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 6</td>
+                    <td>Win 98+</td>
+                    <td class="centered-cell">6</td>
+                    <td class="centered-cell">A</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th data-class="expand">Rendering engine</th>
+                    <th>Browser</th>
+                    <th data-hide="phone">Platform(s)</th>
+                    <th class="centered-cell" data-hide="phone,tablet">Engine version</th>
+                    <th class="centered-cell" data-hide="phone,tablet">CSS grade</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 4.0</td>
+                    <td>Win 95+</td>
+                    <td class="centered-cell">4</td>
+                    <td class="centered-cell">X</td>
+                </tr>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 5.0</td>
+                    <td>Win 95+</td>
+                    <td class="centered-cell">5</td>
+                    <td class="centered-cell">C</td>
+                </tr>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 5.5</td>
+                    <td>Win 95+</td>
+                    <td class="centered-cell">5.5</td>
+                    <td class="centered-cell">A</td>
+                </tr>
+                <tr>
+                    <td>Trident</td>
+                    <td>Internet Explorer 6</td>
+                    <td>Win 98+</td>
+                    <td class="centered-cell">6</td>
+                    <td class="centered-cell">A</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="lib/lodash/lodash.min.js"></script>
+<script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="lib/jquery.dataTables/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="lib/jquery.dataTables/js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="../files/js/datatables.responsive.js"></script>
+<script type="text/javascript" src="js/dom-bootstrap-multiple-table.js"></script>
+</body>
+</html>
