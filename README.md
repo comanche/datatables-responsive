@@ -132,7 +132,11 @@ tableContainer.dataTable({
 
 That's it!
 
+##Destroying and Recreating a Data Table on the Same Element
 If you need to destroy and recreate a data table on the same table element, see the `ajax-bootstrap-recreate-table.html` example.
+
+##Initializing Multiple Data Tables
+Each data table instance needs its own instance of a responsive helper.  If you are initializing multiple tables using a single jQuery wrapped set, see the `dom-bootstrap-multiple-table.html` example.
 
 ##Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
