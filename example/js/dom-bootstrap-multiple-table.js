@@ -6,9 +6,9 @@ $(document).ready(function () {
         tablet: 1024,
         phone : 480
     };
-    var tableElement = $('table');
+    var tableElements = $('table');
 
-    tableElement.dataTable({
+    tableElements.dataTable({
         sDom           : '<"row"<"span6"l><"span6"f>r>t<"row"<"span6"i><"span6"p>>',
         sPaginationType: 'bootstrap',
         oLanguage      : {
@@ -17,15 +17,15 @@ $(document).ready(function () {
         bAutoWidth     : false,
         fnPreDrawCallback: function () {
             // Initialize the responsive datatables helper once.
-            if (!this.data('responsiveHelper')) {
-                this.data('responsiveHelper', new ResponsiveDatatablesHelper(this, breakpointDefinition));
+            if (!this.responsiveHelper) {
+                this.responsiveHelper = new ResponsiveDatatablesHelper(this, breakpointDefinition);
             }
         },
         fnRowCallback  : function (nRow) {
-            this.data('responsiveHelper').createExpandIcon(nRow);
+            this.responsiveHelper.createExpandIcon(nRow);
         },
         fnDrawCallback : function (oSettings) {
-            this.data('responsiveHelper').respond();
+            this.responsiveHelper.respond();
         }
     });
 });
