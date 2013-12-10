@@ -132,6 +132,9 @@ tableContainer.dataTable({
 
 That's it!
 
+##How to Alway Keep a Column Hidden
+If you want to always keep a column hidden, add the `data-hide="always"` attribute to that column's `th` element.  Note that the `always` breakpoint is reserved.
+
 ##Destroying and Recreating a Data Table on the Same Element
 If you need to destroy and recreate a data table on the same table element, see the `ajax-bootstrap-recreate-table.html` example.
 
