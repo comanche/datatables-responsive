@@ -40,12 +40,20 @@
  * attribute.  The data-hide attribute is optional and may be defined for each
  * th element in the table header.
  *
+ * The parameter, options, is an object of options supported by the responsive
+ * helper.  The following options are supported:
+ *
+ *     {
+ *          hideEmptyColumnsInRowDetail - Boolean, default: false.
+ *     }
+ *
  * @param {Object|string} tableSelector jQuery wrapped set or selector for
  *                                      datatables container element.
  * @param {Object} breakpoints          Object defining the responsive
  *                                      breakpoint for datatables.
+ * @param {Object} options              Object of options.
  */
-function ResponsiveDatatablesHelper(tableSelector, breakpoints) {
+function ResponsiveDatatablesHelper(tableSelector, breakpoints, options) {
     if (typeof tableSelector === 'string') {
         this.tableElement = $(tableSelector);
     } else {
@@ -83,6 +91,11 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints) {
          */
     };
 
+    // Store default options
+    this.options = {
+        hideEmptyColumnsInRowDetail: false
+    };
+
     // Expand icon template
     this.expandIconTemplate = '<span class="responsiveExpander"></span>';
 
@@ -97,18 +110,20 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints) {
     this.skipNextWindowsWidthChange = false;
 
     // Initialize settings
-    this.init(breakpoints);
+    this.init(breakpoints, options);
 }
 
 /**
- * Responsive datatables helper init function.  Builds breakpoint limits
- * for columns and begins to listen to window resize event.
+ * Responsive datatables helper init function.
+ * Builds breakpoint limits for columns and begins to listen to window resize
+ * event.
  *
  * See constructor for the breakpoints parameter.
  *
  * @param {Object} breakpoints
+ * @param {Object} options
  */
-ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
+ResponsiveDatatablesHelper.prototype.init = function (breakpoints, options) {
     // Add the 'always' breakpoint
     breakpoints['always'] = Infinity;
 
@@ -186,8 +201,16 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints) {
 
     // Enable responsive behavior.
     this.disable(false);
+
+    // Extend options
+    _.extend(this.options, options);
 };
 
+/**
+ * Sets or removes window resize handler.
+ *
+ * @param {Boolean} bindFlag
+ */
 ResponsiveDatatablesHelper.prototype.setWindowsResizeHandler = function(bindFlag) {
     if (bindFlag === undefined) {
         bindFlag = true;
@@ -384,26 +407,31 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
 
     // Loop through hidden columns and create an li for each of them.
     _.each(responsiveDatatablesHelperInstance.columnsHiddenIndexes, function (index) {
-        var li = $(responsiveDatatablesHelperInstance.rowLiTemplate);
-        $('.columnTitle', li).html(columns[index].sTitle);
+        // Get row td
         var rowIndex = tableContainer.fnGetPosition(tr[0]);
         var td = tableContainer.fnGetTds(rowIndex)[index];
-        var rowHtml = $(td).contents().clone();
-		$('.columnValue', li).html(rowHtml);
 
-		// Copy index to data attribute, so we'll know where to put the value when the tr.row-detail is removed
-		li.attr('data-column', index);
+        // Don't create li if contents are empty (depends on hideEmptyColumnsInRowDetail option).
+        if (!responsiveDatatablesHelperInstance.options.hideEmptyColumnsInRowDetail || td.innerHTML.trim().length) {
+            var li = $(responsiveDatatablesHelperInstance.rowLiTemplate);
+            $('.columnTitle', li).html(columns[index].sTitle);
+            var rowHtml = $(td).contents().clone();
+            $('.columnValue', li).html(rowHtml);
 
-		// Copy td class to new li
-		var tdClass = $(td).attr('class');
-		if (tdClass !== 'undefined' && tdClass !== false && tdClass !== '') {
-			      li.addClass(tdClass)
-		}
+            // Copy index to data attribute, so we'll know where to put the value when the tr.row-detail is removed.
+            li.attr('data-column', index);
 
-        ul.append(li);
+            // Copy td class to new li.
+            var tdClass = $(td).attr('class');
+            if (tdClass !== 'undefined' && tdClass !== false && tdClass !== '') {
+                      li.addClass(tdClass)
+            }
+
+            ul.append(li);
+        }
     });
 
-    // Create tr colspan attribute
+    // Create tr colspan attribute.
     var colspan = responsiveDatatablesHelperInstance.columnIndexes.length - responsiveDatatablesHelperInstance.columnsHiddenIndexes.length;
     newTr.find('> td').attr('colspan', colspan);
 
@@ -420,7 +448,7 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
 ResponsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatablesHelperInstance, tr) {
 
     // If the value of an input has changed, we need to copy its state back to the DataTables object
-    // so that value will persist when the tr.row-detail is removed
+    // so that value will persist when the tr.row-detail is removed.
     tr.next('.row-detail').find('li').each(function () {
 	    var tableContainer = responsiveDatatablesHelperInstance.tableElement;
 	    var aoData = tableContainer.fnSettings().aoData;
@@ -441,7 +469,7 @@ ResponsiveDatatablesHelper.prototype.disable = function (disable) {
     this.disabled = (disable === undefined) || disable;
 
     if (this.disabled) {
-        // Remove windows resize handler
+        // Remove windows resize handler.
         this.setWindowsResizeHandler(false);
 
         // Remove all trs that have row details.
@@ -450,7 +478,7 @@ ResponsiveDatatablesHelper.prototype.disable = function (disable) {
         // Remove all trs that are marked to have row details shown.
         $('tbody tr', this.tableElement).removeClass('detail-show');
 
-        // Remove all expander icons
+        // Remove all expander icons.
         $('tbody tr span.responsiveExpander', this.tableElement).remove();
 
         this.columnsHiddenIndexes = [];
@@ -460,20 +488,20 @@ ResponsiveDatatablesHelper.prototype.disable = function (disable) {
 
         this.tableElement.off('click', 'span.responsiveExpander', this.showRowDetailEventHandler);
     } else {
-        // Add windows resize handler
+        // Add windows resize handler.
         this.setWindowsResizeHandler();
     }
 }
 
 /**
-* Get an array of TD nodes from DataTables for a given row, including any column elements which are hidden.
-*
-* Author: Allan Jardine
-* http://datatables.net/plug-ins/api
-*
-* @param {Object} oSettings DataTables settings object
-* @param {node}   mTr       TR node or aoData index
-*/
+ * Get an array of TD nodes from DataTables for a given row, including any column elements which are hidden.
+ *
+ * Author: Allan Jardine
+ * http://datatables.net/plug-ins/api
+ *
+ * @param {Object} oSettings DataTables settings object
+ * @param {node}   mTr       TR node or aoData index
+ */
 $.fn.dataTableExt.oApi.fnGetTds = function (oSettings, mTr)
 {
     var anTds = [];
