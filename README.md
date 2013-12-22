@@ -146,6 +146,7 @@ The responsive helper supports options via a third parameter in the constructor 
 ```javascript
 var tableContainer = $('myTable');
 var breakpointDefinition  = { /* Break points here */ };
+var responsiveHelper;
 // ...
 responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition, {
    hideEmptyColumnsInRowDetail: true
