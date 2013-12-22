@@ -141,6 +141,25 @@ If you need to destroy and recreate a data table on the same table element, see 
 ##Initializing Multiple Data Tables
 Each data table instance needs its own instance of a responsive helper.  If you are initializing multiple tables using a single jQuery wrapped set, see the `dom-bootstrap-multiple-table.html` example.
 
+##Options
+The responsive helper supports options via a third parameter in the constructor like this:
+```javascript
+var tableContainer = $('myTable');
+var breakpointDefinition  = { /* Break points here */ };
+// ...
+responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition, {
+   hideEmptyColumnsInRowDetail: true
+});
+```
+
+Currently supported options are:
+
+`hideEmptyColumnsInRowDetail`
+
+- Type: `Boolean`
+- Default: `false`
+- In responsive mode, clicking on the expand icon will only show hidden columns that actually have content.
+
 ##Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
 
