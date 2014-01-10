@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title></title>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
-    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap-responsive.min.css"/>
-    <link rel="stylesheet" href="lib/jquery.dataTables/css/DT_bootstrap.css"/>
+    <link rel="stylesheet" href="lib/bootstrap2/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="lib/bootstrap2/css/bootstrap-responsive.min.css"/>
+    <link rel="stylesheet" href="lib/jquery.dataTables.bootstrap2/css/DT_bootstrap.css"/>
     <link rel="stylesheet" href="../files/css/datatables.responsive.css"/>
     <link rel="stylesheet" href="css/style.css"/>
     <style>
@@ -24,7 +24,21 @@
 
 <div class="container">
     <div class="row">
-        <div class="span12 title">Bootstrap v2.x Responsive Example Using AJAX with Checkboxes</div>
+        <div class="span12 title">
+            Bootstrap v2.x Responsive Example Using AJAX with Checkboxes: Recreating DataTable Instance Using
+            the Same Tree Element.
+        </div>
+    </div>
+    <div class="row">
+        <div class="span12">
+            <div class="btn-toolbar">
+                <div class="btn-group">
+                    <button class="btn btn-primary" data-ajax-url="arrays.txt">Table1</button>
+                    <button class="btn btn-primary" data-ajax-url="arrays2.txt">Table2</button>
+                </div>
+            </div>
+
+        </div>
     </div>
     <div class="row">
         <div class="span12">
@@ -62,8 +76,8 @@
 <script type="text/javascript" src="lib/lodash/lodash.min.js"></script>
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
 <script type="text/javascript" src="lib/jquery.dataTables/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="lib/jquery.dataTables/js/DT_bootstrap.js"></script>
+<script type="text/javascript" src="lib/jquery.dataTables.bootstrap2/js/DT_bootstrap.js"></script>
 <script type="text/javascript" src="../files/js/datatables.responsive.js"></script>
-<script type="text/javascript" src="js/ajax-bootstrap.js"></script>
+<script type="text/javascript" src="js/ajax-bootstrap-recreate-table.js"></script>
 </body>
 </html>
