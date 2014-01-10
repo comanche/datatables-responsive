@@ -69,7 +69,8 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints, options) {
     //     data-class="expand"
     // is defined.
     this.expandColumn = undefined;
-
+    // Stores original breakpoint defitions
+    this.origBreakpointsDefs = undefined
     // Stores the break points defined in the table header.
     // Each th in the header tr may contain an optional attribute like
     //     data-hide="phone,tablet"
@@ -124,13 +125,24 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints, options) {
  * @param {Object} options
  */
 ResponsiveDatatablesHelper.prototype.init = function (breakpoints, options) {
+    this.origBreakpointsDefs = breakpoints;
+    this.initBreakpoints();
+
+    // Enable responsive behavior.
+    this.disable(false);
+
+    // Extend options
+    _.extend(this.options, options);
+};
+
+ResponsiveDatatablesHelper.prototype.initBreakpoints = function () {
     // Add the 'always' breakpoint
-    breakpoints['always'] = Infinity;
+    this.origBreakpointsDefs['always'] = Infinity;
 
     /** Generate breakpoints in the format we need. ***************************/
     // First, we need to create a sorted array of the breakpoints given.
     var breakpointsSorted = [];
-    _.each(breakpoints, function (value, key) {
+    _.each(this.origBreakpointsDefs, function (value, key) {
         breakpointsSorted.push({
             name         : key,
             upperLimit   : value,
@@ -156,12 +168,14 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints, options) {
 
     // Copy the sorted breakpoint array into the breakpoints object using the
     // name as the key.
+    this.breakpoints = {};
     for (var i = 0, l = breakpointsSorted.length; i < l; i++) {
         this.breakpoints[breakpointsSorted[i].name] = breakpointsSorted[i];
     }
 
     /** Create range of possible column indexes *******************************/
     // Get all visible column indexes
+    this.columnIndexes = [];
     var columns = this.tableElement.fnSettings().aoColumns;
     for (var i = 0, l = columns.length; i < l; i++) {
         if (columns[i].bVisible) {
@@ -202,13 +216,7 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints, options) {
             }, this);
         }
     }, this);
-
-    // Enable responsive behavior.
-    this.disable(false);
-
-    // Extend options
-    _.extend(this.options, options);
-};
+}
 
 /**
  * Sets or removes window resize handler.
