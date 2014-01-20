@@ -209,7 +209,16 @@ ResponsiveDatatablesHelper.prototype.initBreakpoints = function () {
         if (dataHide !== undefined) {
             var splitBreakingPoints = dataHide.split(/,\s*/);
             _.each(splitBreakingPoints, function (e) {
-                if (this.breakpoints[e] !== undefined) {
+                if (e === 'always') {
+                    // A column with an 'always' breakpoint is always hidden.
+                    // Loop through all breakpoints and add it to each except the
+                    // default breakpoint.
+                    _.each(this.breakpoints, function (breakpoint, breakpointName) {
+                        if (breakpointName !== 'default') {
+                            breakpoint.columnsToHide.push(this.columnIndexes[index]);
+                        }
+                    }, this);
+                } else if (this.breakpoints[e] !== undefined) {
                     // Translate visible column index to internal column index.
                     this.breakpoints[e].columnsToHide.push(this.columnIndexes[index]);
                 }
