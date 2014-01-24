@@ -19,7 +19,7 @@ Add the following viewport meta tag to your HTML's head section:
 
 ##Include CSS files
 
-These instructions are done using Datatables and Bootstrap.  You may use whatever you choose.
+These instructions are done using Datatables and Bootstrap 2.  You may use whatever CSS framework you choose.
 
 For more information on Datatables and Bootstrap, see [http://www.datatables.net/blog/Twitter_Bootstrap][3] and [http://www.datatables.net/blog/Twitter_Bootstrap_2][4].
 
@@ -31,6 +31,8 @@ Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
 <link rel="stylesheet" href="DT_bootstrap.css"/>
 <link rel="stylesheet" href="datatables.responsive.css"/>
 ```
+
+If you are using Bootstrap 3, see the `ajax-bootstrap3.html` example.
 
 ##Include JS files
 
@@ -160,6 +162,12 @@ Currently supported options are:
 - Type: `Boolean`
 - Default: `false`
 - In responsive mode, clicking on the expand icon will only show hidden columns that actually have content.
+
+`clickOn`
+
+- Type: `String`
+- Acceptable values: `icon`, `cell` or `row`
+- Default: `icon`
 
 ##Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
