@@ -45,6 +45,7 @@
  *
  *     {
  *          hideEmptyColumnsInRowDetail - Boolean, default: false.
+ *          clickOn                     - icon|cell|row, default: icon
  *     }
  *
  * @param {Object|string} tableSelector jQuery wrapped set or selector for
@@ -94,7 +95,8 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints, options) {
 
     // Store default options
     this.options = {
-        hideEmptyColumnsInRowDetail: false
+        hideEmptyColumnsInRowDetail: false,
+        clickOn: 'icon'
     };
 
     // Expand icon template
@@ -373,7 +375,17 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
                 td.prepend(that.expandIconTemplate);
 
                 // Respond to click event on expander icon.
-                td.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: that}, that.showRowDetailEventHandler);
+                switch (this.options.clickOn) {
+                    case 'cell':
+                        td.on('click', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
+                        break;
+                    case 'row':
+                        $(tr).on('click', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
+                        break;
+                    default:
+                        td.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: that}, that.showRowDetailEventHandler);
+                        break;
+                }
             }
             break;
         }
