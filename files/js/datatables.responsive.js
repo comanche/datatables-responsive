@@ -362,17 +362,16 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
     // Get the td for tr with the same index as the th in the header tr
     // that has the data-class="expand" attribute defined.
     var tds = $('td', tr);
-    var that = this;
     // Loop through tds and create an expand icon on the td that has a column
     // index equal to the expand column given.
     for (var i = 0, l = tds.length; i < l; i++) {
         var td = tds[i];
-        var tdIndex = that.tableElement.fnGetPosition(td)[2];
+        var tdIndex = this.tableElement.fnGetPosition(td)[2];
         td = $(td);
-        if (tdIndex === that.expandColumn) {
+        if (tdIndex === this.expandColumn) {
             // Create expand icon if there isn't one already.
             if ($('span.responsiveExpander', td).length == 0) {
-                td.prepend(that.expandIconTemplate);
+                td.prepend(this.expandIconTemplate);
 
                 // Respond to click event on expander icon.
                 switch (this.options.clickOn) {
@@ -383,7 +382,7 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
                         $(tr).on('click', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
                         break;
                     default:
-                        td.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: that}, that.showRowDetailEventHandler);
+                        td.on('click', 'span.responsiveExpander', {responsiveDatatablesHelperInstance: this}, this.showRowDetailEventHandler);
                         break;
                 }
             }
@@ -401,18 +400,26 @@ ResponsiveDatatablesHelper.prototype.createExpandIcon = function (tr) {
  * @param {Object} event jQuery event object
  */
 ResponsiveDatatablesHelper.prototype.showRowDetailEventHandler = function (event) {
-    if (this.disabled) {
+    var responsiveDatatablesHelperInstance = event.data.responsiveDatatablesHelperInstance;
+    if (responsiveDatatablesHelperInstance.disabled) {
+        return;
+    }
+
+    var td = $(this);
+
+    // Nothing to do if there are no columns hidden.
+    if (!td.closest('table').hasClass('has-columns-hidden')) {
         return;
     }
 
     // Get the parent tr of which this td belongs to.
-    var tr = $(this).closest('tr');
+    var tr = td.closest('tr');
 
     // Show/hide row details
     if (tr.hasClass('detail-show')) {
-        ResponsiveDatatablesHelper.prototype.hideRowDetail(event.data.responsiveDatatablesHelperInstance, tr);
+        ResponsiveDatatablesHelper.prototype.hideRowDetail(responsiveDatatablesHelperInstance, tr);
     } else {
-        ResponsiveDatatablesHelper.prototype.showRowDetail(event.data.responsiveDatatablesHelperInstance, tr);
+        ResponsiveDatatablesHelper.prototype.showRowDetail(responsiveDatatablesHelperInstance, tr);
     }
 
     tr.toggleClass('detail-show');
