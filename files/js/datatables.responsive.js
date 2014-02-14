@@ -1,6 +1,6 @@
 /**
  * File:        datatables.responsive.js
- * Version:     0.1.3
+ * Version:     0.1.4
  * Author:      Seen Sai Yang
  * Info:        https://github.com/Comanche/datatables-responsive
  *
@@ -65,13 +65,24 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints, options) {
     this.columnIndexes = [];
     this.columnsShownIndexes = [];
     this.columnsHiddenIndexes = [];
+    this.currentBreakpoint = '';
+    this.lastBreakpoint = '';
+    this.lastColumnsHiddenIndexes = [];
+
+    // Save state
+    var fileName = window.location.pathname.split("/").pop();
+    var oSettings = this.tableElement.fnSettings();
+    this.tableId = oSettings.sTableId;
+    this.saveState = oSettings.oInit.bStateSave;
+    this.cookieName = this.tableElement.fnSettings().sCookiePrefix + 'ResponsiveHelper_' + this.tableId + '_' + fileName;
+    this.lastStateExists = false;
 
     // Index of the th in the header tr that stores where the attribute
     //     data-class="expand"
     // is defined.
     this.expandColumn = undefined;
     // Stores original breakpoint defitions
-    this.origBreakpointsDefs = undefined
+    this.origBreakpointsDefs = undefined;
     // Stores the break points defined in the table header.
     // Each th in the header tr may contain an optional attribute like
     //     data-hide="phone,tablet"
@@ -138,96 +149,99 @@ ResponsiveDatatablesHelper.prototype.init = function (breakpoints, options) {
 };
 
 ResponsiveDatatablesHelper.prototype.initBreakpoints = function () {
-    // Add the 'always' breakpoint
-    this.origBreakpointsDefs['always'] = Infinity;
+    // Get last state if it exists
+    this.getState();
 
-    /** Generate breakpoints in the format we need. ***************************/
-    // First, we need to create a sorted array of the breakpoints given.
-    var breakpointsSorted = [];
-    _.each(this.origBreakpointsDefs, function (value, key) {
+    if (!this.lastStateExists) {
+        /** Generate breakpoints in the format we need. ***********************/
+        // First, we need to create a sorted array of the breakpoints given.
+        var breakpointsSorted = [];
+        _.each(this.origBreakpointsDefs, function (value, key) {
+            breakpointsSorted.push({
+                name         : key,
+                upperLimit   : value,
+                columnsToHide: []
+            });
+        });
+        breakpointsSorted = _.sortBy(breakpointsSorted, 'upperLimit');
+
+        // Set lower and upper limits for each breakpoint.
+        var lowerLimit = 0;
+        _.each(breakpointsSorted, function (value) {
+            value.lowerLimit = lowerLimit;
+            lowerLimit = value.upperLimit;
+        });
+
+        // Add the default breakpoint which shows all (has no upper limit).
         breakpointsSorted.push({
-            name         : key,
-            upperLimit   : value,
+            name         : 'always',
+            lowerLimit   : lowerLimit,
+            upperLimit   : Infinity,
             columnsToHide: []
         });
-    });
-    breakpointsSorted = _.sortBy(breakpointsSorted, 'upperLimit');
 
-    // Set lower and upper limits for each breakpoint.
-    var lowerLimit = undefined;
-    _.each(breakpointsSorted, function (value) {
-        value.lowerLimit = lowerLimit;
-        lowerLimit = value.upperLimit;
-    });
+        // Copy the sorted breakpoint array into the breakpoints object using the
+        // name as the key.
+        this.breakpoints = {};
+        var i, l;
+        for (i = 0, l = breakpointsSorted.length; i < l; i++) {
+            this.breakpoints[breakpointsSorted[i].name] = breakpointsSorted[i];
+        }
 
-    // Add the default breakpoint which shows all (has no upper limit).
-    breakpointsSorted.push({
-        name         : 'default',
-        lowerLimit   : lowerLimit,
-        upperLimit   : undefined,
-        columnsToHide: []
-    });
+        /** Create range of possible column indexes ***************************/
+        // Get all current visible column indexes
+        var columns = this.tableElement.fnSettings().aoColumns;
+        for (i = 0, l = columns.length; i < l; i++) {
+            if (columns[i].bVisible) {
+                this.columnIndexes.push(i);
+            }
+        }
 
-    // Copy the sorted breakpoint array into the breakpoints object using the
-    // name as the key.
-    this.breakpoints = {};
-    for (var i = 0, l = breakpointsSorted.length; i < l; i++) {
-        this.breakpoints[breakpointsSorted[i].name] = breakpointsSorted[i];
+        /** Get visible column headers to work with ***************************/
+        // We need the range of possible column indexes to calculate the columns
+        // to show:
+        //     Columns to show = all columns - columns to hide
+        var headerColumns = this.tableElement.fnSettings().aoColumns;
+        // Filter for only visible columns.
+        headerColumns = _.filter(headerColumns, function (col) {
+            return col.bVisible;
+        });
+
+        /** Sort columns into breakpoints respectively ************************/
+        // Read column headers' attributes and get needed info
+        _.each(headerColumns, function (col, index) {
+            // Get the column with the attribute data-class="expand" so we know
+            // where to display the expand icon.
+            if ($(col.nTh).attr('data-class') === 'expand') {
+                this.expandColumn = this.columnIndexes[index];
+            }
+
+            // The data-hide attribute has the breakpoints that this column
+            // is associated with.
+            // If it's defined, get the data-hide attribute and sort this
+            // column into the appropriate breakpoint's columnsToHide array.
+            var dataHide = $(col.nTh).attr('data-hide');
+            if (dataHide !== undefined) {
+                var splitBreakingPoints = dataHide.split(/,\s*/);
+                _.each(splitBreakingPoints, function (e) {
+                    if (e === 'always') {
+                        // A column with an 'always' breakpoint is always hidden.
+                        // Loop through all breakpoints and add it to each except the
+                        // default breakpoint.
+                        _.each(this.breakpoints, function (breakpoint, breakpointName) {
+                            if (breakpointName !== 'default') {
+                                breakpoint.columnsToHide.push(this.columnIndexes[index]);
+                            }
+                        }, this);
+                    } else if (this.breakpoints[e] !== undefined) {
+                        // Translate visible column index to internal column index.
+                        this.breakpoints[e].columnsToHide.push(this.columnIndexes[index]);
+                    }
+                }, this);
+            }
+        }, this);
     }
-
-    /** Create range of possible column indexes *******************************/
-    // Get all visible column indexes
-    this.columnIndexes = [];
-    var columns = this.tableElement.fnSettings().aoColumns;
-    for (var i = 0, l = columns.length; i < l; i++) {
-        if (columns[i].bVisible) {
-            this.columnIndexes.push(i)
-        }
-    }
-
-    // We need the range of possible column indexes to calculate the columns
-    // to show:
-    //     Columns to show = all columns - columns to hide
-    var headerColumns = this.tableElement.fnSettings().aoColumns;
-    // Filter for only visible columns.
-    headerColumns = _.filter(headerColumns, function (col) {
-        return col.bVisible;
-    });
-
-    /** Add columns into breakpoints respectively *****************************/
-    // Read column headers' attributes and get needed info
-    _.each(headerColumns, function (col, index) {
-        // Get the column with the attribute data-class="expand" so we know
-        // where to display the expand icon.
-        if ($(col.nTh).attr('data-class') === 'expand') {
-            this.expandColumn = this.columnIndexes[index];
-        }
-
-        // The data-hide attribute has the breakpoints that this column
-        // is associated with.
-        // If it's defined, get the data-hide attribute and sort this
-        // column into the appropriate breakpoint's columnsToHide array.
-        var dataHide = $(col.nTh).attr('data-hide');
-        if (dataHide !== undefined) {
-            var splitBreakingPoints = dataHide.split(/,\s*/);
-            _.each(splitBreakingPoints, function (e) {
-                if (e === 'always') {
-                    // A column with an 'always' breakpoint is always hidden.
-                    // Loop through all breakpoints and add it to each except the
-                    // default breakpoint.
-                    _.each(this.breakpoints, function (breakpoint, breakpointName) {
-                        if (breakpointName !== 'default') {
-                            breakpoint.columnsToHide.push(this.columnIndexes[index]);
-                        }
-                    }, this);
-                } else if (this.breakpoints[e] !== undefined) {
-                    // Translate visible column index to internal column index.
-                    this.breakpoints[e].columnsToHide.push(this.columnIndexes[index]);
-                }
-            }, this);
-        }
-    }, this);
-}
+};
 
 /**
  * Sets or removes window resize handler.
@@ -247,7 +261,7 @@ ResponsiveDatatablesHelper.prototype.setWindowsResizeHandler = function(bindFlag
     } else {
         $(window).unbind("resize");
     }
-}
+};
 
 /**
  * Respond window size change.  This helps make datatables responsive.
@@ -260,12 +274,12 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
 
     // Get new windows width
     var newWindowWidth = $(window).width();
-    var updatedHiddenColumnsCount = 0;
 
     // Loop through breakpoints to see which columns need to be shown/hidden.
     var newColumnsToHide = [];
     _.each(this.breakpoints, function (element) {
         if ((!element.lowerLimit || newWindowWidth > element.lowerLimit) && (!element.upperLimit || newWindowWidth <= element.upperLimit)) {
+            this.currentBreakpoint = element.name;
             newColumnsToHide = element.columnsToHide;
         }
     }, this);
@@ -276,11 +290,17 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
     var columnShowHide = false;
     if (!this.skipNextWindowsWidthChange) {
         // Check difference in length
-        if (this.columnsHiddenIndexes.length !== newColumnsToHide.length) {
-            // Difference in length
+        if (this.lastBreakpoint.length === 0 && newColumnsToHide.length) {
+            // No previous breakpoint and new breakpoint
+            columnShowHide = true;
+        } else if (this.lastBreakpoint != this.currentBreakpoint) {
+            // Different breakpoints
+            columnShowHide = true;
+        } else if (this.columnsHiddenIndexes.length !== newColumnsToHide.length) {
+            // Difference in number of hidden columns
             columnShowHide = true;
         } else {
-            // Same length but check difference in values
+            // Possible same number of columns but check for difference in columns
             var d1 = _.difference(this.columnsHiddenIndexes, newColumnsToHide).length;
             var d2 = _.difference(newColumnsToHide, this.columnsHiddenIndexes).length;
             columnShowHide = d1 + d2 > 0;
@@ -295,7 +315,8 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
         this.columnsHiddenIndexes = newColumnsToHide;
         this.columnsShownIndexes = _.difference(this.columnIndexes, this.columnsHiddenIndexes);
         this.showHideColumns();
-        updatedHiddenColumnsCount = this.columnsHiddenIndexes.length;
+        this.lastBreakpoint = this.currentBreakpoint;
+        this.setState();
         this.skipNextWindowsWidthChange = false;
     }
 
@@ -531,47 +552,110 @@ ResponsiveDatatablesHelper.prototype.disable = function (disable) {
         // Add windows resize handler.
         this.setWindowsResizeHandler();
     }
-}
+};
 
 /**
- * Get an array of TD nodes from DataTables for a given row, including any column elements which are hidden.
- *
- * Author: Allan Jardine
- * http://datatables.net/plug-ins/api
- *
- * @param {Object} oSettings DataTables settings object
- * @param {node}   mTr       TR node or aoData index
+ * Get state from cookie.
  */
-$.fn.dataTableExt.oApi.fnGetTds = function (oSettings, mTr)
-{
-    var anTds = [];
-    var anVisibleTds = [];
-    var iCorrector = 0;
-    var nTd, iColumn, iColumns;
-
-    /* Take either a TR node or aoData index as the mTr property */
-    var iRow = (typeof mTr == 'object') ?
-        oSettings.oApi._fnNodeToDataIndex(oSettings, mTr) : mTr;
-    var nTr = oSettings.aoData[iRow].nTr;
-
-    /* Get an array of the visible TD elements */
-    for (iColumn=0, iColumns=nTr.childNodes.length; iColumn<iColumns ; iColumn++) {
-        nTd = nTr.childNodes[iColumn];
-        if (nTd.nodeName.toUpperCase() == "TD") {
-            anVisibleTds.push( nTd );
+ResponsiveDatatablesHelper.prototype.getState = function () {
+    try {
+        var value = JSON.parse(decodeURIComponent(this.getCookie(this.cookieName)));
+        if (value) {
+            this.columnIndexes = value.columnIndexes;
+            this.breakpoints = value.breakpoints;
+            this.expandColumn = value.expandColumn;
+            this.lastBreakpoint = value.lastBreakpoint;
+            this.lastStateExists = true;
         }
+    } catch (e) {
     }
-
-    /* Construct and array of the combined elements */
-    for (iColumn=0, iColumns=oSettings.aoColumns.length; iColumn<iColumns ; iColumn++) {
-        if (oSettings.aoColumns[iColumn].bVisible) {
-            anTds.push( anVisibleTds[iColumn-iCorrector] );
-        }
-        else {
-            anTds.push( oSettings.aoData[iRow]._anHidden[iColumn] );
-            iCorrector++;
-        }
-    }
-
-    return anTds;
 };
+
+/**
+ * Saves state to cookie.
+ */
+ResponsiveDatatablesHelper.prototype.setState = function () {
+    var d1 = _.difference(this.lastColumnsHiddenIndexes, this.columnsHiddenIndexes).length;
+    var d2 = _.difference(this.columnsHiddenIndexes, this.lastColumnsHiddenIndexes).length;
+
+    if (d1 + d2 > 0) {
+        var value = encodeURIComponent(JSON.stringify({
+            columnIndexes: this.columnIndexes,
+            columnsHiddenIndexes: this.columnsHiddenIndexes,
+            breakpoints: this.breakpoints,
+            expandColumn: this.expandColumn,
+            lastBreakpoint: this.lastBreakpoint
+        }));
+
+        this.setCookie(this.cookieName, value, 2 * 60 * 60 * 1000);
+        this.lastColumnsHiddenIndexes = this.columnsHiddenIndexes.slice(0);
+    }
+};
+
+/**
+ * Set cookie.
+ */
+ResponsiveDatatablesHelper.prototype.getCookie = function (cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
+    }
+    return "";
+};
+
+/**
+ * Set cookie.
+ */
+ResponsiveDatatablesHelper.prototype.setCookie = function (cname, cvalue, cexp) {
+    var d = new Date();
+    d.setTime(d.getTime() + cexp);
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+};
+
+(function($){
+    /**
+     * Get an array of TD nodes from DataTables for a given row, including any column elements which are hidden.
+     *
+     * Author: Allan Jardine
+     * http://datatables.net/plug-ins/api
+     *
+     * @param {Object} oSettings DataTables settings object
+     * @param {node}   mTr       TR node or aoData index
+     */
+    $.fn.dataTableExt.oApi.fnGetTds = function (oSettings, mTr)
+    {
+        var anTds = [];
+        var anVisibleTds = [];
+        var iCorrector = 0;
+        var nTd, iColumn, iColumns;
+
+        /* Take either a TR node or aoData index as the mTr property */
+        var iRow = (typeof mTr == 'object') ?
+            oSettings.oApi._fnNodeToDataIndex(oSettings, mTr) : mTr;
+        var nTr = oSettings.aoData[iRow].nTr;
+
+        /* Get an array of the visible TD elements */
+        for (iColumn=0, iColumns=nTr.childNodes.length; iColumn<iColumns ; iColumn++) {
+            nTd = nTr.childNodes[iColumn];
+            if (nTd.nodeName.toUpperCase() == "TD") {
+                anVisibleTds.push( nTd );
+            }
+        }
+
+        /* Construct and array of the combined elements */
+        for (iColumn=0, iColumns=oSettings.aoColumns.length; iColumn<iColumns ; iColumn++) {
+            if (oSettings.aoColumns[iColumn].bVisible) {
+                anTds.push( anVisibleTds[iColumn-iCorrector] );
+            }
+            else {
+                anTds.push( oSettings.aoData[iRow]._anHidden[iColumn] );
+                iCorrector++;
+            }
+        }
+
+        return anTds;
+    };
+})(jQuery);
