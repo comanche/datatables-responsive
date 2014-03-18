@@ -483,8 +483,19 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
         if (!responsiveDatatablesHelperInstance.options.hideEmptyColumnsInRowDetail || td.innerHTML.trim().length) {
             var li = $(responsiveDatatablesHelperInstance.rowLiTemplate);
             $('.columnTitle', li).html(columns[index].nTh.innerHTML);
-            var rowHtml = $(td).contents().clone();
-            $('.columnValue', li).html(rowHtml);
+            var contents = $(td).contents();
+            var clonedContents = contents.clone();
+
+            // Select elements' selectedIndex are not cloned.  Do it manually.
+            for (var n = 0, m = contents.length; n < m; n++) {
+                var node = contents[n];
+                if (node.nodeType === Node.ELEMENT_NODE && node.tagName === 'SELECT') {
+                    clonedContents[n].selectedIndex = node.selectedIndex
+                }
+            }
+
+            // Set the column contents.
+            $('.columnValue', li).append(clonedContents).data('originalTdSource', td);
 
             // Copy index to data attribute, so we'll know where to put the value when the tr.row-detail is removed.
             li.attr('data-column', index);
@@ -514,15 +525,13 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
  * @param {Object}                     tr                                 jQuery wrapped set
  */
 ResponsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatablesHelperInstance, tr) {
-    // If the value of an input has changed, we need to copy its state back to the DataTables object
-    // so that value will persist when the tr.row-detail is removed.
+    // If the value of an input has changed while in row detail, we need to copy its state back
+    // to the DataTables object so that value will persist when the tr.row-detail is removed.
     tr.next('.row-detail').find('li').each(function () {
-        var tableContainer = responsiveDatatablesHelperInstance.tableElement;
-        var aoData = tableContainer.fnSettings().aoData;
-        var rowIndex = tableContainer.fnGetPosition(tr[0]);
-        var column = $(this).attr('data-column');
-        var updatedTd = $(this).find('span.columnValue').contents();
-        aoData[rowIndex]._anHidden[column] = $(aoData[rowIndex]._anHidden[column]).empty().append(updatedTd)[0];
+        var columnValueContainer = $(this).find('span.columnValue');
+        var tdContents = columnValueContainer.contents();
+        var td = columnValueContainer.data('originalTdSource');
+        $(td).empty().append(tdContents);
     });
     tr.next('.row-detail').remove();
 };
