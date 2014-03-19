@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="../../files/1/css/datatables.responsive.css"/>
+    <style>
+        .title {
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        .table th.centered-cell, .table td.centered-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 title">Bootstrap v3.x Responsive Example Using AJAX with Checkboxes</div>
+    </div>
+
+    <table id="example" cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" >
+        <!--thead section is required-->
+        <thead>
+        <tr>
+            <th class="centered-cell"><input type="checkbox" id="masterCheck" class="checkbox" disabled/></th>
+            <th data-class="expand">Rendering engine</th>
+            <th>Browser</th>
+            <th data-hide="phone">Platform(s)</th>
+            <th data-hide="phone,tablet">Engine version</th>
+            <th data-hide="phone,tablet">CSS grade</th>
+        </tr>
+        </thead>
+        <!--tbody section is required-->
+        <tbody></tbody>
+        <!--tfoot section is optional-->
+        <tfoot>
+        <tr>
+            <th></th>
+            <th>Engine</th>
+            <th>Browser</th>
+            <th>Platform(s)</th>
+            <th>Engine version</th>
+            <th>CSS grade</th>
+        </tr>
+        </tfoot>
+    </table>
+
+</div>
+
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.9.4/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="../../files/1/js/datatables.responsive.js"></script>
+<script src="js/ajax-bootstrap3.js"></script>
+</body>
+</html>
