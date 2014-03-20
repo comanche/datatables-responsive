@@ -8,21 +8,19 @@ $(document).ready(function () {
     };
     var tableElement = $('#example');
 
-    $(document).ready(function () {
-        $('#example').dataTable({
-            autoWidth        : false,
-            preDrawCallback: function () {
-                // Initialize the responsive datatables helper once.
-                if (!responsiveHelper) {
-                    responsiveHelper = new ResponsiveDatatablesHelper(tableElement, breakpointDefinition);
-                }
-            },
-            rowCallback    : function (nRow) {
-                responsiveHelper.createExpandIcon(nRow);
-            },
-            drawCallback   : function (oSettings) {
-                responsiveHelper.respond();
+    tableElement.dataTable({
+        autoWidth        : false,
+        preDrawCallback: function () {
+            // Initialize the responsive datatables helper once.
+            if (!responsiveHelper) {
+                responsiveHelper = new ResponsiveDatatablesHelper(tableElement, breakpointDefinition);
             }
-        });
+        },
+        rowCallback    : function (nRow) {
+            responsiveHelper.createExpandIcon(nRow);
+        },
+        drawCallback   : function (oSettings) {
+            responsiveHelper.respond();
+        }
     });
 });
