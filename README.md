@@ -19,14 +19,25 @@ Add the following viewport meta tag to your HTML's head section:
 
 Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
 
+**DataTables 1.x and Bootstrap 3.x**
+
 ```html
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
-<link rel="stylesheet" href="lib/jquery.dataTables.bootstrap3/css/dataTables.bootstrap.css"/>
-<link rel="stylesheet" href="../files/css/datatables.responsive.css"/>
+<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.css"/>
+<link rel="stylesheet" href="../../files/1/css/datatables.responsive.css"/>
+```
+If you are using Bootstrap 2, see the `ajax-bootstrap2.html` example.
+
+**DataTables 2.x and Bootstrap 3.x**
+
+```html
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.css"/>
+<link rel="stylesheet" href="../../files/2/css/datatables.responsive.css"/>
 ```
 
-If you are using Bootstrap 2, see the `ajax-bootstrap2.html` example.
 
 For more information on Datatables and Bootstrap 2, see
 [http://www.datatables.net/blog/Twitter_Bootstrap][6]
@@ -39,13 +50,22 @@ For Bootstrap 3, see
 
 Add jQuery, Datatables, Datables-Bootstrap and the responsive Datatables helper scripts.
 
+**DataTables 1.x and Bootstrap 3.x**
+
 ```html
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.9.4/js/jquery.dataTables.min.js"></script>
-<script type="text/javascript" src="lib/jquery.dataTables.bootstrap3/js/dataTables.bootstrap.js"></script>
-<script type="text/javascript" src="../files/js/datatables.responsive.js"></script>
+<script src="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="../../files/1/js/datatables.responsive.js"></script>
 ```
+**DataTables 2.x and Bootstrap 3.x**
 
+```html
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="//datatables.net/download/build/nightly/jquery.dataTables.min.js?_=196d0219f598ce19c84c48d0557e51d3"></script>
+<script src="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="../../files/2/js/datatables.responsive.js"></script>
+```
 
 ## Create variables and break point definitions.
 
@@ -62,10 +82,14 @@ var tableContainer = $('#example');
 ## Create Datatables Instance
 Create the datatables instance with the following
 
+### DataTables 1.x
+
 - Set `bAutoWidth` to `false`.
 - Set `fnPreDrawCallback` to only initialize the responsive datatables helper once
 - Set `fnRowCallback` to create expand icon.
 - Set `fnDrawCallback` to respond to window `resize` events.
+
+**DataTables 1.x and Responsive Helper Initialization**
 
 ```javascript
 tableContainer.dataTable({
@@ -94,8 +118,36 @@ tableContainer.dataTable({
 });
 ```
 
+### DataTables 2.x
+
+- Set `autoWidth` to `false`.
+- Set `preDrawCallback` to only initialize the responsive datatables helper once
+- Set `rowCallback` to create expand icon.
+- Set `drawCallback` to respond to window `resize` events.
+
+**DataTables 2.x and Responsive Helper Initialization**
+
+```javascript
+tableElement.dataTable({
+    autoWidth        : false,
+    preDrawCallback: function () {
+        // Initialize the responsive datatables helper once.
+        if (!responsiveHelper) {
+            responsiveHelper = new ResponsiveDatatablesHelper(tableElement, breakpointDefinition);
+        }
+    },
+    rowCallback    : function (nRow) {
+        responsiveHelper.createExpandIcon(nRow);
+    },
+    drawCallback   : function (oSettings) {
+        responsiveHelper.respond();
+    }
+});
+```
+
+
 ## Add Data Attributes to the Table Elements
-5. Add the `data-class="expand"` attribute to the `th` element for the respective column that will you want to display the expand icon in.  This `th` element cannot be a column that will be hidden.
+5. Add the `data-class="expand"` attribute to the `th` element for the respective column that will you want to display the expand icon in.  The `th` element cannot be for a column that will be hidden.
 
 6. Add `data-hide="phone,tablet"` to the `th` element for the respective column that will you want to hide when the window is resized.
 
@@ -135,7 +187,7 @@ That's it!
 
 To see a working example, look in the `example` folder of the repository.
 
-## How to Alway Keep a Column Hidden
+## How to Always Keep a Column Hidden
 If you want to always keep a column hidden, add the `data-hide="always"` attribute to that column's `th` element.  Note that the `always` breakpoint is reserved.
 
 ## Destroying and Recreating a Data Table on the Same Element
