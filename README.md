@@ -231,7 +231,7 @@ Thanks to Brad Vincent and his friend Steve for making the awesome responsive [F
   [1]: http://datatables.net/
   [2]: http://jquery.com/
   [3]: http://themergency.com/footable/
-  [4]: https://github.com/Comanche/datatables-responsive/tree/master/example
+  [4]: https://github.com/Comanche/datatables-responsive/tree/master/examples
   [5]: http://getbootstrap.com/
   [6]: http://www.datatables.net/blog/Twitter_Bootstrap
   [7]: http://www.datatables.net/blog/Twitter_Bootstrap_2
