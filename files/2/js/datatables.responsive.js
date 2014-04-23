@@ -216,9 +216,9 @@ ResponsiveDatatablesHelper.prototype.initBreakpoints = function () {
         for (var index = 0; index < visibleColumnsHeadersTds.length; index++) {
             // Get the column with the attribute data-class="expand" so we know
             // where to display the expand icon.
-            var col = visibleColumnsHeadersTds[index];
+            var col = $(visibleColumnsHeadersTds[index]);
 
-            if ($(col).attr('data-class') === 'expand') {
+            if (col.attr('data-class') === 'expand') {
                 this.expandColumn = this.columnIndexes[index];
             }
 
@@ -226,7 +226,7 @@ ResponsiveDatatablesHelper.prototype.initBreakpoints = function () {
             // is associated with.
             // If it's defined, get the data-hide attribute and sort this
             // column into the appropriate breakpoint's columnsToHide array.
-            var dataHide = $(col).attr('data-hide');
+            var dataHide = col.attr('data-hide');
             if (dataHide !== undefined) {
                 var splitBreakingPoints = dataHide.split(/,\s*/);
                 for (var i = 0; i < splitBreakingPoints.length; i++) {
@@ -239,7 +239,7 @@ ResponsiveDatatablesHelper.prototype.initBreakpoints = function () {
                             if (this.breakpoints[prop].name !== 'default') {
                                 this.breakpoints[prop].columnsToHide.push(this.columnIndexes[index]);
                             }
-                            }
+                        }
                     } else if (this.breakpoints[bp] !== undefined) {
                         // Translate visible column index to internal column index.
                         this.breakpoints[bp].columnsToHide.push(this.columnIndexes[index]);
@@ -486,7 +486,8 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
         // Don't create li if contents are empty (depends on hideEmptyColumnsInRowDetail option).
         if (!responsiveDatatablesHelperInstance.options.hideEmptyColumnsInRowDetail || td.innerHTML.trim().length) {
             var li = $(responsiveDatatablesHelperInstance.rowLiTemplate);
-            $('.columnTitle', li).html(columns[index].innerHTML);
+            var hiddenColumnName = $(columns[index]).attr('data-name');
+            $('.columnTitle', li).html(hiddenColumnName !== undefined ? hiddenColumnName : columns[index].innerHTML);
             var contents = $(td).contents();
             var clonedContents = contents.clone();
 

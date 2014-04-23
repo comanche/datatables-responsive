@@ -147,9 +147,11 @@ tableElement.dataTable({
 
 
 ## Add Data Attributes to the Table Elements
-5. Add the `data-class="expand"` attribute to the `th` element for the respective column that will you want to display the expand icon in.  The `th` element cannot be for a column that will be hidden.
+- Add the `data-class="expand"` attribute to the `th` element for the respective column that will you want to display the expand icon in.  The `th` element cannot be for a column that will be hidden.
 
-6. Add `data-hide="phone,tablet"` to the `th` element for the respective column that will you want to hide when the window is resized.
+- Add `data-hide="phone,tablet"` to the `th` element for the respective column that will you want to hide when the window is resized.
+
+- Add `data-name="Hidden Column Name"` to the `th` element for the respective column that will you would like its label to be set to when hidden.
 
 ```html
 <div class="span12">
@@ -160,9 +162,9 @@ tableElement.dataTable({
             <th class="centered-cell"><input type="checkbox" id="masterCheck" class="checkbox"/></th>
             <th data-class="expand">Rendering engine</th>
             <th>Browser</th>
-            <th data-hide="phone">Platform(s)</th>
-            <th data-hide="phone,tablet">Engine version</th>
-            <th data-hide="phone,tablet">CSS grade</th>
+            <th data-hide="phone" data-name="Plat">Platform(s)</th>
+            <th data-hide="phone,tablet" data-name="Eng Ver">Engine version</th>
+            <th data-hide="phone,tablet" data-name="CSS Grd">CSS grade</th>
         </tr>
         </thead>
         <!--tbody section is required-->
