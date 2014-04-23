@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DataTables Example</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
+    <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.css"/>
+    <link rel="stylesheet" href="../../files/2/css/datatables.responsive.css"/>
+    <style>
+        .title {
+            font-size: larger;
+            font-weight: bold;
+        }
+
+        .table th.centered-cell, .table td.centered-cell {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="row">
+        <div class="col-xs-12 title">Bootstrap v3.x Responsive Example Using AJAX</div>
+    </div>
+
+    <div class="form-inline">
+        <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
+            <thead>
+                <tr>
+                    <th data-class="expand">Name</th>
+                    <th>Position</th>
+                    <th data-hide="phone">Office</th>
+                    <th data-hide="phone">Age</th>
+                    <th data-hide="phone,tablet">Start date</th>
+                    <th data-hide="phone,tablet">Salary</th>
+                </tr>
+            </thead>
+            <!--tfoot section is optional-->
+            <tfoot>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Age</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                </tr>
+            </tfoot>
+            <!--tbody section is required-->
+            <tbody></tbody>
+        </table>
+    </div>
+
+
+</div>
+
+<script src="//code.jquery.com/jquery.min.js"></script>
+<script src="//datatables.net/download/build/nightly/jquery.dataTables.min.js?_=196d0219f598ce19c84c48d0557e51d3"></script>
+<script src="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="../../files/2/js/datatables.responsive.js"></script>
+<script src="js/ajax-bootstrap3.js"></script>
+</body>
+</html>
