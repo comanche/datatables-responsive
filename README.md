@@ -75,7 +75,7 @@ var breakpointDefinition = {
     tablet: 1024,
     phone : 480
 };
-var tableContainer = $('#example');
+var tableElement = $('#example');
 ```
 
 
@@ -92,7 +92,7 @@ Create the datatables instance with the following
 **DataTables 1.x and Responsive Helper Initialization**
 
 ```javascript
-tableContainer.dataTable({
+tableElement.dataTable({
 
     // Setup for Bootstrap support.
     sPaginationType  : 'bootstrap',
@@ -105,7 +105,7 @@ tableContainer.dataTable({
     fnPreDrawCallback: function () {
         // Initialize the responsive datatables helper once.
         if (!responsiveHelper) {
-            responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition);
+            responsiveHelper = new ResponsiveDatatablesHelper(tableElement, breakpointDefinition);
         }
     },
     fnRowCallback  : function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -201,11 +201,11 @@ Each data table instance needs its own instance of a responsive helper.  If you 
 ## Options
 The responsive helper supports options via a third parameter in the constructor like this:
 ```javascript
-var tableContainer = $('myTable');
+var tableElement = $('myTable');
 var breakpointDefinition  = { /* Break points here */ };
 var responsiveHelper;
 // ...
-responsiveHelper = new ResponsiveDatatablesHelper(tableContainer, breakpointDefinition, {
+responsiveHelper = new ResponsiveDatatablesHelper(tableElement, breakpointDefinition, {
    hideEmptyColumnsInRowDetail: true
 });
 ```

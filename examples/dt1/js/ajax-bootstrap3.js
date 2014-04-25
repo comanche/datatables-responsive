@@ -148,7 +148,7 @@ $(document).ready(function () {
                 // event will fire the changed event that we can handle.  Directly changing
                 // the checked property like this
                 //
-                //    $('tbody input:checkbox', tableContainer).not(this).prop('checked', this.checked);
+                //    $('tbody input:checkbox', tableElement).not(this).prop('checked', this.checked);
                 //
                 // toggles all checkboxes but does not trigger click events.  Because there's
                 // no click event, there's no changed events on the checkboxes.  We need the

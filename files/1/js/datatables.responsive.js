@@ -462,8 +462,8 @@ ResponsiveDatatablesHelper.prototype.showRowDetailEventHandler = function (event
  */
 ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatablesHelperInstance, tr) {
     // Get column because we need their titles.
-    var tableContainer = responsiveDatatablesHelperInstance.tableElement;
-    var columns = tableContainer.fnSettings().aoColumns;
+    var tableElement = responsiveDatatablesHelperInstance.tableElement;
+    var columns = tableElement.fnSettings().aoColumns;
 
     // Create the new tr.
     var newTr = $(responsiveDatatablesHelperInstance.rowTemplate);
@@ -476,8 +476,8 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
         var index = responsiveDatatablesHelperInstance.columnsHiddenIndexes[i];
 
         // Get row td
-        var rowIndex = tableContainer.fnGetPosition(tr[0]);
-        var td = tableContainer.fnGetTds(rowIndex)[index];
+        var rowIndex = tableElement.fnGetPosition(tr[0]);
+        var td = tableElement.fnGetTds(rowIndex)[index];
 
         // Don't create li if contents are empty (depends on hideEmptyColumnsInRowDetail option).
         if (!responsiveDatatablesHelperInstance.options.hideEmptyColumnsInRowDetail || td.innerHTML.trim().length) {
