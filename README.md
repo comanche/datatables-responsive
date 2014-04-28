@@ -224,6 +224,18 @@ Currently supported options are:
 - Acceptable values: `icon`, `cell` or `row`
 - Default: `icon`
 
+`showRowDetail`
+
+- Type: `Function`
+- Default: null
+- Function called when the detail row has been shown.  Passes the jquery tr object for the detail row as an argument.
+
+`hideDetailRow`
+
+- Type: `Function`
+- Default: null
+- Function called when the detail row is going to be hidden.  Passes the jquery tr object for the detail row as an argument.
+
 ## Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
 
