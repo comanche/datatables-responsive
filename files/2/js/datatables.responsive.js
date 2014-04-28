@@ -46,6 +46,8 @@
  *     {
  *          hideEmptyColumnsInRowDetail - Boolean, default: false.
  *          clickOn                     - icon|cell|row, default: icon
+ *          showDetail                  - function called when detail row shown
+ *          hideDetail                  - function called when detail row hidden
  *     }
  *
  * @param {Object|string} tableSelector jQuery wrapped set or selector for
@@ -111,7 +113,9 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints, options) {
     // Store default options
     this.options = {
         hideEmptyColumnsInRowDetail: false,
-        clickOn: 'icon'
+        clickOn: 'icon',
+        showDetail: null,
+        hideDetail: null
     };
 
     // Expand icon template
@@ -520,6 +524,11 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
 
     // Append the new tr after the current tr.
     tr.after(newTr);
+
+    // call the showDetail function if needbe
+    if (responsiveDatatablesHelperInstance.options.showDetail){
+        responsiveDatatablesHelperInstance.options.showDetail(newTr);
+    }
 };
 
 /**
@@ -531,13 +540,17 @@ ResponsiveDatatablesHelper.prototype.showRowDetail = function (responsiveDatatab
 ResponsiveDatatablesHelper.prototype.hideRowDetail = function (responsiveDatatablesHelperInstance, tr) {
     // If the value of an input has changed while in row detail, we need to copy its state back
     // to the DataTables object so that value will persist when the tr.row-detail is removed.
-    tr.next('.row-detail').find('li').each(function () {
+    var rowDetail = tr.next('.row-detail');
+    if (responsiveDatatablesHelperInstance.options.hideDetail){
+        responsiveDatatablesHelperInstance.options.hideDetail(rowDetail);
+    }
+    rowDetail.find('li').each(function () {
         var columnValueContainer = $(this).find('span.columnValue');
         var tdContents = columnValueContainer.contents();
         var td = columnValueContainer.data('originalTdSource');
         $(td).empty().append(tdContents);
     });
-    tr.next('.row-detail').remove();
+    rowDetail.remove();
 };
 
 /**
