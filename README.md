@@ -19,22 +19,22 @@ Add the following viewport meta tag to your HTML's head section:
 
 Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
 
-**DataTables 1.x and Bootstrap 3.x**
+**DataTables 1.9.x and Bootstrap 3.x**
 
 ```html
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
-<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.css"/>
+<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.css"/>
 <link rel="stylesheet" href="../../files/1/css/datatables.responsive.css"/>
 ```
 If you are using Bootstrap 2, see the `ajax-bootstrap2.html` example.
 
-**DataTables 2.x and Bootstrap 3.x**
+**DataTables 1.10.x and Bootstrap 3.x**
 
 ```html
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
-<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.css"/>
+<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.css"/>
 <link rel="stylesheet" href="../../files/2/css/datatables.responsive.css"/>
 ```
 
@@ -50,20 +50,20 @@ For Bootstrap 3, see
 
 Add jQuery, Datatables, Datables-Bootstrap and the responsive Datatables helper scripts.
 
-**DataTables 1.x and Bootstrap 3.x**
+**DataTables 1.9.x and Bootstrap 3.x**
 
 ```html
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.9.4/js/jquery.dataTables.min.js"></script>
-<script src="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="../../files/1/js/datatables.responsive.js"></script>
 ```
-**DataTables 2.x and Bootstrap 3.x**
+**DataTables 1.10.x and Bootstrap 3.x**
 
 ```html
 <script src="//code.jquery.com/jquery.min.js"></script>
-<script src="//datatables.net/download/build/nightly/jquery.dataTables.min.js?_=196d0219f598ce19c84c48d0557e51d3"></script>
-<script src="//cdn.datatables.net/plug-ins/505bef35b56/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.js"></script>
 <script src="../../files/2/js/datatables.responsive.js"></script>
 ```
 
@@ -82,14 +82,14 @@ var tableElement = $('#example');
 ## Create Datatables Instance
 Create the datatables instance with the following
 
-### DataTables 1.x
+### DataTables 1.9.x
 
 - Set `bAutoWidth` to `false`.
 - Set `fnPreDrawCallback` to only initialize the responsive datatables helper once
 - Set `fnRowCallback` to create expand icon.
 - Set `fnDrawCallback` to respond to window `resize` events.
 
-**DataTables 1.x and Responsive Helper Initialization**
+**DataTables 1.9.x and Responsive Helper Initialization**
 
 ```javascript
 tableElement.dataTable({
@@ -118,14 +118,14 @@ tableElement.dataTable({
 });
 ```
 
-### DataTables 2.x
+### DataTables 1.10.x
 
 - Set `autoWidth` to `false`.
 - Set `preDrawCallback` to only initialize the responsive datatables helper once
 - Set `rowCallback` to create expand icon.
 - Set `drawCallback` to respond to window `resize` events.
 
-**DataTables 2.x and Responsive Helper Initialization**
+**DataTables 1.10.x and Responsive Helper Initialization**
 
 ```javascript
 tableElement.dataTable({
