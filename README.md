@@ -224,13 +224,13 @@ Currently supported options are:
 - Acceptable values: `icon`, `cell` or `row`
 - Default: `icon`
 
-`showRowDetail`
+`showDetail`
 
 - Type: `Function`
 - Default: null
 - Function called when the detail row has been shown.  Passes the jquery tr object for the detail row as an argument.
 
-`hideDetailRow`
+`hideDetail`
 
 - Type: `Function`
 - Default: null
