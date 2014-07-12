@@ -209,7 +209,7 @@ ResponsiveDatatablesHelper.prototype.initBreakpoints = function () {
         var columns = this.api.columns().header();
         var visibleColumnsHeadersTds = [];
         for (i = 0, l = columns.length; i < l; i++) {
-            if (this.api.columns(i).visible()) {
+            if (this.api.column(i).visible()) {
                 this.columnIndexes.push(i);
                 visibleColumnsHeadersTds.push(columns[i]);
             }
