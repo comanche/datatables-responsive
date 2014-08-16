@@ -591,8 +591,9 @@ ResponsiveDatatablesHelper.prototype.disable = function (disable) {
  * Get state from cookie.
  */
 ResponsiveDatatablesHelper.prototype.getState = function () {
-    try {
-        var value = JSON.parse(decodeURIComponent(this.getCookie(this.cookieName)));
+    if (typeof(Storage)) {
+        // Use local storage
+        var value = JSON.parse(localStorage.getItem(this.cookieName));
         if (value) {
             this.columnIndexes = value.columnIndexes;
             this.breakpoints = value.breakpoints;
@@ -600,7 +601,8 @@ ResponsiveDatatablesHelper.prototype.getState = function () {
             this.lastBreakpoint = value.lastBreakpoint;
             this.lastStateExists = true;
         }
-    } catch (e) {
+    } else {
+        // No local storage.
     }
 };
 
@@ -608,44 +610,27 @@ ResponsiveDatatablesHelper.prototype.getState = function () {
  * Saves state to cookie.
  */
 ResponsiveDatatablesHelper.prototype.setState = function () {
-    var d1 = this.difference(this.lastColumnsHiddenIndexes, this.columnsHiddenIndexes).length;
-    var d2 = this.difference(this.columnsHiddenIndexes, this.lastColumnsHiddenIndexes).length;
+    if (typeof(Storage)) {
+        // Use local storage
+        var d1 = this.difference(this.lastColumnsHiddenIndexes, this.columnsHiddenIndexes).length;
+        var d2 = this.difference(this.columnsHiddenIndexes, this.lastColumnsHiddenIndexes).length;
 
-    if (d1 + d2 > 0) {
-        var value = encodeURIComponent(JSON.stringify({
-            columnIndexes: this.columnIndexes,
-            columnsHiddenIndexes: this.columnsHiddenIndexes,
-            breakpoints: this.breakpoints,
-            expandColumn: this.expandColumn,
-            lastBreakpoint: this.lastBreakpoint
-        }));
+        if (d1 + d2 > 0) {
+            var tt;
+            var value = {
+                columnIndexes: this.columnIndexes,               // array
+                columnsHiddenIndexes: this.columnsHiddenIndexes, // array
+                breakpoints: this.breakpoints,                   // object
+                expandColumn: this.expandColumn,                 // int|undefined
+                lastBreakpoint: this.lastBreakpoint              // string
+            };
 
-        this.setCookie(this.cookieName, value, 2 * 60 * 60 * 1000);
-        this.lastColumnsHiddenIndexes = this.columnsHiddenIndexes.slice(0);
+            localStorage.setItem(this.cookieName, JSON.stringify(value));
+            this.lastColumnsHiddenIndexes = this.columnsHiddenIndexes.slice(0);
+        }
+    } else {
+        // No local storage.
     }
-};
-
-/**
- * Get cookie.
- */
-ResponsiveDatatablesHelper.prototype.getCookie = function (cname) {
-    var name = cname + "=";
-    var ca = document.cookie.split(';');
-    for (var i = 0; i < ca.length; i++) {
-        var c = ca[i].trim();
-        if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-    }
-    return "";
-};
-
-/**
- * Set cookie.
- */
-ResponsiveDatatablesHelper.prototype.setCookie = function (cname, cvalue, cexp) {
-    var d = new Date();
-    d.setTime(d.getTime() + cexp);
-    var expires = "expires=" + d.toGMTString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
 };
 
 /**
