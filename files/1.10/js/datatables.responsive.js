@@ -48,18 +48,6 @@
  *          clickOn                     - icon|cell|row, default: icon
  *          showDetail                  - function called when detail row shown
  *          hideDetail                  - function called when detail row hidden
- *          useParentWidth              - Boolean, default: false. If true, all
- *                                        breakpoints will be compared against
- *                                        the width of the tables parent element.
- *          useContainerWidth           - Boolean, default: false. If true, all
- *                                        breakpoints will be compared againt
- *                                        the width of containerElement.
- *          containerElement            - The container element to compare
- *                                        breakpoints with.
- *          debounceWait                - Wait time for debounce resize events,
- *                                        default: 100 (ms)
- *          consoleLog					- Boolean, default: false. Defines wether
- *                                        resize events should be logged to console.
  *     }
  *
  * @param {Object|string} tableSelector jQuery wrapped set or selector for
@@ -127,12 +115,7 @@ function ResponsiveDatatablesHelper(tableSelector, breakpoints, options) {
         hideEmptyColumnsInRowDetail: false,
         clickOn: 'icon',
         showDetail: null,
-        hideDetail: null,
-		useParentWidth: false,
-		useTableWidth: false,
-		containerElement: null,
-		debounceWait: 100,
-		consoleLog: false
+        hideDetail: null
     };
 
     // Expand icon template
@@ -283,21 +266,9 @@ ResponsiveDatatablesHelper.prototype.setWindowsResizeHandler = function(bindFlag
 
     if (bindFlag) {
         var that = this;
-		if ($.debounce && (typeof $.debounce == "function")) {
-			// Use jQuery debounce plugin, if available
-			$(window).bind("resize", $.debounce(this.options.debounceWait, function () {
-				that.respond();
-			}));
-		} else if (_.debounce  && (typeof _.debounce == "function")) {
-			// Use Underscore/Lo-Dash debounce, if available
-			$(window).bind("resize", _.debounce(function () {
-				that.respond();
-			}, this.options.debounceWait));
-		} else {
-			$(window).bind("resize", function () {
-				that.respond();
-			});
-		}
+        $(window).bind("resize", function () {
+            that.respond();
+        });
     } else {
         $(window).unbind("resize");
     }
@@ -312,25 +283,15 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
     }
     var that = this;
 
-    // Get new window or table width
-	var newWidth = 0;
-	if ((this.options.useContainerWidth === true) && (this.options.containerElement !== null)) {
-		newWidth = this.options.containerElement.width();
-		if (this.options.consoleLog && console && console.log && (typeof console.log == "function")) console.log("Responding to resize event, using container width: " + newWidth);
-	} else if (this.options.useParentWidth === true) {
-		newWidth = this.tableElement.parent().width();
-		if (this.options.consoleLog && console && console.log && (typeof console.log == "function")) console.log("Responding to resize event, using parent width: " + newWidth);
-	} else {
-		newWidth = $(window).width();
-		if (this.options.consoleLog && console && console.log && (typeof console.log == "function")) console.log("Responding to resize event, using window width: " + newWidth);
-	}
-	
+    // Get new windows width
+    var newWindowWidth = $(window).width();
+
     // Loop through breakpoints to see which columns need to be shown/hidden.
     var newColumnsToHide = [];
 
     for (var prop in this.breakpoints) {
         var element = this.breakpoints[prop];
-        if ((!element.lowerLimit || newWidth > element.lowerLimit) && (!element.upperLimit || newWidth <= element.upperLimit)) {
+        if ((!element.lowerLimit || newWindowWidth > element.lowerLimit) && (!element.upperLimit || newWindowWidth <= element.upperLimit)) {
             this.currentBreakpoint = element.name;
             newColumnsToHide = element.columnsToHide;
         }
