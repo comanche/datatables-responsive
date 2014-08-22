@@ -236,6 +236,31 @@ Currently supported options are:
 - Default: null
 - Function called when the detail row is going to be hidden.  Passes the jquery tr object for the detail row as an argument.
 
+`widthReference`
+
+- Type: `String`
+- Acceptable values: `window`, `parent` or `custom`
+- Default: `window`
+- Defines, which DOM element should be used to compare width to breakpoints: Window object, the parent object of the table element (usually the enclosing container element) or a custom element defined by customReferenceElement.
+
+`customReferenceElement`
+
+- Type: `Object`
+- Default: null
+- DOM object to be used as reference element to compare width to breakpoints.
+
+`consoleLog`
+
+- Type: `Boolean`
+- Default: false
+- Defines, whether window resize events and the measured reference element width should be logged to console.
+
+`debounceWait`
+
+- Type: `Integer`
+- Default: 100
+- Wait time for debounced window resize events, supports jQuery Debounce plugin and Underscore debound methods.
+
 ## Thanks
 Thanks to Allan Jardine for making the best data table plugin for jQuery.  Nothing out there comes close.
 
