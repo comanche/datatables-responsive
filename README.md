@@ -25,7 +25,7 @@ Add Bootstrap, Datatables-Bootstrap and responsive Datatables helper CSS files.
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
 <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.css"/>
-<link rel="stylesheet" href="../../files/1/css/datatables.responsive.css"/>
+<link rel="stylesheet" href="../../files/1.9/css/datatables.responsive.css"/>
 ```
 If you are using Bootstrap 2, see the `ajax-bootstrap2.html` example.
 
@@ -35,7 +35,7 @@ If you are using Bootstrap 2, see the `ajax-bootstrap2.html` example.
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
 <link rel="stylesheet" href="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.css"/>
-<link rel="stylesheet" href="../../files/2/css/datatables.responsive.css"/>
+<link rel="stylesheet" href="../../files/1.10/css/datatables.responsive.css"/>
 ```
 
 
@@ -56,7 +56,7 @@ Add jQuery, Datatables, Datables-Bootstrap and the responsive Datatables helper 
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.9.4/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-<script src="../../files/1/js/datatables.responsive.js"></script>
+<script src="../../files/1.9/js/datatables.responsive.js"></script>
 ```
 **DataTables 1.10.x and Bootstrap 3.x**
 
@@ -64,7 +64,7 @@ Add jQuery, Datatables, Datables-Bootstrap and the responsive Datatables helper 
 <script src="//code.jquery.com/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.0/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.datatables.net/plug-ins/e9421181788/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-<script src="../../files/2/js/datatables.responsive.js"></script>
+<script src="../../files/1.10/js/datatables.responsive.js"></script>
 ```
 
 ## Create variables and break point definitions.
