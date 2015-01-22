@@ -349,7 +349,7 @@ ResponsiveDatatablesHelper.prototype.respond = function () {
         });
     } else {
         this.tableElement.removeClass('has-columns-hidden');
-        $('tr.row-detail').each(function (event) {
+        $('tr.row-detail', this.tableElement).each(function (event) {
             ResponsiveDatatablesHelper.prototype.hideRowDetail(that, $(this).prev());
         });
     }
@@ -372,7 +372,7 @@ ResponsiveDatatablesHelper.prototype.showHideColumns = function () {
 
     // Rebuild details to reflect shown/hidden column changes.
     var that = this;
-    $('tr.row-detail').each(function () {
+    $('tr.row-detail', this.tableElement).each(function () {
         ResponsiveDatatablesHelper.prototype.hideRowDetail(that, $(this).prev());
     });
     if (this.tableElement.hasClass('has-columns-hidden')) {
